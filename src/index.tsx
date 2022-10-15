@@ -1,11 +1,15 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import "./index.css"
+
+import "./styles/global.scss"
+import "@fontsource/ibm-plex-sans"
+
 import App from "./App"
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration"
 import reportWebVitals from "./reportWebVitals"
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
+
 root.render(
   <React.StrictMode>
     <App />
