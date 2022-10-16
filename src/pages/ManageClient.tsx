@@ -11,7 +11,7 @@ interface NewClientRequest {
   name: string
 }
 
-export function NewClient() {
+export default function ManageClient() {
   const clientsCollection = useCollection<Client>("clients")
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)

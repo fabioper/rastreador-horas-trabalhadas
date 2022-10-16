@@ -21,7 +21,7 @@ export default function ClientCard({ client }: ClientCardProps) {
     <Card
       title={client.name}
       key={client.id}
-      path="/"
+      path={`/${client.id}`}
       description={description}
       borderColor={clientCardBorderColor}
     />
