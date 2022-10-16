@@ -4,7 +4,7 @@ import React from "react"
 import { BsExclamationCircle } from "react-icons/bs"
 
 interface UseFormParams<T> {
-  onSubmit: (values: T) => void
+  onSubmit: (values: T) => any
   schema?: SchemaOf<T>
   initialValues?: Partial<T>
   validate?: (values: T) => FormikErrors<T>
@@ -18,7 +18,12 @@ export interface UseFormField {
   onBlur: React.FocusEventHandler
 }
 
-export function useForm<T extends FormikValues>({ onSubmit, schema, initialValues, validate }: UseFormParams<T>) {
+export function useForm<T extends FormikValues>({
+  onSubmit,
+  schema,
+  initialValues,
+  validate,
+}: UseFormParams<T>) {
   const form = useFormik<T>({
     initialValues: initialValues != null ? (initialValues as T) : ({} as T),
     validationSchema: schema,
@@ -27,7 +32,8 @@ export function useForm<T extends FormikValues>({ onSubmit, schema, initialValue
     validate,
   })
 
-  const isValid = (field: keyof T): boolean => !form.touched[field] || !form.errors[field]
+  const isValid = (field: keyof T): boolean =>
+    !form.touched[field] || !form.errors[field]
 
   const displayErrorOf = (name: keyof T) =>
     !isValid(name) && (

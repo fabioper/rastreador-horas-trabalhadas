@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import {
+  addDoc,
   collection,
   DocumentData,
   onSnapshot,
@@ -27,9 +28,11 @@ export function useCollection<T extends Model<any>>(
     },
   }
 
-  const mountQuery = useCallback(() => {
-    const collectionRef = collection(db, collectionName).withConverter<T>(typeConverter)
+  const collectionRef = collection(db, collectionName).withConverter<T>(
+    typeConverter
+  )
 
+  const mountQuery = useCallback(() => {
     let queries: QueryConstraint[] = []
 
     if (opts?.orderBy != null) {
@@ -49,5 +52,9 @@ export function useCollection<T extends Model<any>>(
     return () => unsubscribe()
   }, [])
 
-  return { data }
+  async function save(doc: any) {
+    await addDoc(collectionRef, { ...doc, createdDate: new Date() })
+  }
+
+  return { data, save }
 }

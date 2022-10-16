@@ -6,7 +6,10 @@ import Client from "../models/dtos/responses/client"
 import ClientCard from "../shared/components/ClientCard/ClientCard"
 
 export function Home() {
-  const { data: clients } = useCollection<Client>("clients")
+  const { data: clients } = useCollection<Client>("clients", {
+    orderBy: "createdDate",
+    dir: "desc",
+  })
 
   return (
     <main>

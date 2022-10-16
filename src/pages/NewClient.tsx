@@ -2,12 +2,18 @@ import React from "react"
 import Button from "../shared/components/Button/Button"
 import { useForm } from "../hooks/useForm"
 import { object, string } from "yup"
+import { useCollection } from "../hooks/useCollection"
+import Client from "../models/dtos/responses/client"
+import { useNavigate } from "react-router-dom"
 
 interface NewClientRequest {
   name: string
 }
 
 export function NewClient() {
+  const clientsCollection = useCollection<Client>("clients")
+  const navigate = useNavigate()
+
   const { form, field, isValid, displayErrorOf } = useForm<NewClientRequest>({
     initialValues: { name: "" },
     schema: object({
@@ -16,9 +22,12 @@ export function NewClient() {
     onSubmit,
   })
 
-  function onSubmit(values: NewClientRequest): void {
-    console.log(values)
-    form.resetForm()
+  async function onSubmit(values: NewClientRequest) {
+    if (form.isValid) {
+      await clientsCollection.save(values)
+      form.resetForm()
+      navigate("/")
+    }
   }
 
   return (
@@ -35,7 +44,10 @@ export function NewClient() {
             <label htmlFor="name" className="form-label">
               Nome:
             </label>
-            <input {...field("name")} className={`form-input ${!isValid("name") ? "invalid" : ""}`} />
+            <input
+              {...field("name")}
+              className={`form-input ${!isValid("name") ? "invalid" : ""}`}
+            />
             {displayErrorOf("name")}
           </div>
 
