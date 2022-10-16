@@ -112,10 +112,13 @@ main {
   }
 
   @media (max-width: 500px) {
+    margin-bottom: 8rem;
+
     button {
-      width: 100%;
-      position: sticky;
-      top: 100%;
+      width: calc(100% - 2rem);
+      position: fixed;
+      bottom: 0;
+      margin: 1rem;
       left: 0;
     }
   }
