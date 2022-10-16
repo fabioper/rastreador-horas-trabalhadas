@@ -1,4 +1,5 @@
 import React from "react"
+import emptyImage from "../assets/wind-turbine.svg"
 import { useCollection } from "../hooks/useCollection"
 import Button from "../shared/components/Button/Button"
 import { FiPlusCircle } from "react-icons/fi"
@@ -30,7 +31,12 @@ export function Home() {
             ))}
           </div>
 
-          {clients.length === 0 && <div>Nenhum cliente cadastrado</div>}
+          {clients.length === 0 && (
+            <div className="empty-state">
+              <img src={emptyImage} alt="" className="empty-image" />
+              <span>Nenhum cliente cadastrado</span>
+            </div>
+          )}
         </div>
       </div>
     </main>
