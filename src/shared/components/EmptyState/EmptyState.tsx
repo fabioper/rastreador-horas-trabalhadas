@@ -14,7 +14,7 @@ export default function EmptyState({ message, visible }: EmptyStateProps) {
   return (
     <div className="empty-state">
       <img src={emptyImage} alt="" className="empty-image" />
-      <span>message</span>
+      <span>{message}</span>
     </div>
   )
 }

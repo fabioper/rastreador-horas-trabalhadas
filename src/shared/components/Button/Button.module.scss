@@ -62,6 +62,17 @@
     font-size: $font-size-regular;
   }
 
+  &.hasIcon {
+    padding: 2rem 3rem 2rem 5rem;
+
+    .buttonIcon {
+      position: absolute;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
   &:hover {
     background: linear-gradient(90deg, #23bb44, #1b859b);
   }
@@ -72,17 +83,6 @@
     color: #494b57;
     cursor: none;
     pointer-events: none;
-  }
-}
-
-.hasIcon {
-  padding: 2rem 3rem 2rem 5rem;
-
-  .buttonIcon {
-    position: absolute;
-    left: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
   }
 }
 
