@@ -7,11 +7,12 @@ interface CardProps {
   title: string
   path: string
   description: JSX.Element
+  borderColor?: string
 }
 
-function Card({ title, path, description }: CardProps) {
+function Card({ title, path, description, borderColor }: CardProps) {
   return (
-    <Link to={path} className={styles.card}>
+    <Link to={path} className={styles.card} style={{ borderColor }}>
       <div className={styles.cardContent}>
         <h2 className={styles.cardTitle}>{title}</h2>
         <div className={styles.cardDescription}>{description}</div>

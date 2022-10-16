@@ -7,6 +7,8 @@ interface ClientCardProps {
 }
 
 export default function ClientCard({ client }: ClientCardProps) {
+  const clientCardBorderColor = "#2393ab"
+
   const description = useMemo(() => {
     return (
       <>
@@ -15,5 +17,13 @@ export default function ClientCard({ client }: ClientCardProps) {
     )
   }, [client])
 
-  return <Card title={client.name} key={client.id} path="/" description={description} />
+  return (
+    <Card
+      title={client.name}
+      key={client.id}
+      path="/"
+      description={description}
+      borderColor={clientCardBorderColor}
+    />
+  )
 }
