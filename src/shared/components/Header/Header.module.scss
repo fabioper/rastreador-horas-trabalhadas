@@ -1,5 +1,12 @@
+@import "src/styles/variables";
+
 .header {
-  padding: 2rem 0;
+  padding: 1rem 0;
+  background: $color-background;
+  position: sticky;
+  left: 0;
+  top: -1px;
+  z-index: 4;
 }
 
 .logo {

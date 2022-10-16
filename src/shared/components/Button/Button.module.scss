@@ -19,13 +19,14 @@
   cursor: pointer;
   border-radius: 5px;
   transition: all .15s ease-in-out;
+  position: relative;
 }
 
 .buttonIcon {
   display: flex;
 
   svg {
-    stroke-width: 2px;
+    font-size: 2rem;
   }
 }
 
@@ -71,5 +72,31 @@
     color: #494b57;
     cursor: none;
     pointer-events: none;
+  }
+}
+
+.hasIcon {
+  padding: 2rem 3rem 2rem 5rem;
+
+  .buttonIcon {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.loading {
+  pointer-events: none;
+
+  .buttonIcon svg {
+    animation: spin 1s linear infinite;
+    stroke-width: 5px;
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
 }

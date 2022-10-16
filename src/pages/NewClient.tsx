@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import Button from "../shared/components/Button/Button"
 import { useForm } from "../hooks/useForm"
 import { object, string } from "yup"
 import { useCollection } from "../hooks/useCollection"
 import Client from "../models/dtos/responses/client"
 import { useNavigate } from "react-router-dom"
+import { MdCheck } from "react-icons/md"
 
 interface NewClientRequest {
   name: string
@@ -13,6 +14,7 @@ interface NewClientRequest {
 export function NewClient() {
   const clientsCollection = useCollection<Client>("clients")
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
 
   const { form, field, isValid, displayErrorOf } = useForm<NewClientRequest>({
     initialValues: { name: "" },
@@ -23,10 +25,17 @@ export function NewClient() {
   })
 
   async function onSubmit(values: NewClientRequest) {
-    if (form.isValid) {
-      await clientsCollection.save(values)
-      form.resetForm()
-      navigate("/")
+    setIsLoading(true)
+    try {
+      if (form.isValid) {
+        await clientsCollection.save(values)
+        form.resetForm()
+        navigate("/")
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -51,7 +60,13 @@ export function NewClient() {
             {displayErrorOf("name")}
           </div>
 
-          <Button type="submit" kind="success" disabled={!form.isValid}>
+          <Button
+            type="submit"
+            kind="success"
+            disabled={!form.isValid}
+            icon={MdCheck}
+            loading={isLoading}
+          >
             Salvar novo cliente
           </Button>
         </div>
