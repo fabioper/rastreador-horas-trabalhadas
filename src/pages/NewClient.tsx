@@ -29,7 +29,7 @@ export function NewClient() {
         </div>
       </header>
 
-      <form className="form" onSubmit={form.handleSubmit}>
+      <form className="form" onSubmit={form.handleSubmit} autoComplete="off">
         <div className="container">
           <div className="form-control">
             <label htmlFor="name" className="form-label">

@@ -123,3 +123,12 @@ main {
     }
   }
 }
+
+span.counter {
+  background: #333334;
+  color: #e4e4e4;
+  font-size: $font-size-small;
+  font-weight: 500;
+  padding: 1px 3px;
+  border-radius: 2px;
+}

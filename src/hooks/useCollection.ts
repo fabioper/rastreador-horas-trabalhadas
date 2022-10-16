@@ -10,8 +10,9 @@ import {
   WithFieldValue,
 } from "firebase/firestore"
 import { db } from "../services/firebase"
+import Model from "../models/dtos/responses/model"
 
-export function useCollection<T extends Record<string, any> & { id: string }>(
+export function useCollection<T extends Model<any>>(
   collectionName: string,
   opts?: { orderBy?: keyof T & string; dir?: "desc" | "asc" }
 ) {
@@ -22,7 +23,6 @@ export function useCollection<T extends Record<string, any> & { id: string }>(
       return { ...modelObject }
     },
     fromFirestore(snapshot: QueryDocumentSnapshot): T {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       return { id: snapshot.id, ...snapshot.data() } as T
     },
   }
