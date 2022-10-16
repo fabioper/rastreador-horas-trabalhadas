@@ -1,7 +1,26 @@
 import React from "react"
 import Button from "../shared/components/Button/Button"
+import { useForm } from "../hooks/useForm"
+import { object, string } from "yup"
+
+interface NewClientRequest {
+  name: string
+}
 
 export function NewClient() {
+  const { form, field, isValid, displayErrorOf } = useForm<NewClientRequest>({
+    initialValues: { name: "" },
+    schema: object({
+      name: string().required("Você deve informar o nome do cliente"),
+    }),
+    onSubmit,
+  })
+
+  function onSubmit(values: NewClientRequest): void {
+    console.log(values)
+    form.resetForm()
+  }
+
   return (
     <main>
       <header className="page-header">
@@ -10,16 +29,17 @@ export function NewClient() {
         </div>
       </header>
 
-      <form className="form">
+      <form className="form" onSubmit={form.handleSubmit}>
         <div className="container">
           <div className="form-control">
             <label htmlFor="name" className="form-label">
               Nome:
             </label>
-            <input type="text" name="name" id="name" className="form-input" />
+            <input {...field("name")} className={`form-input ${!isValid("name") ? "invalid" : ""}`} />
+            {displayErrorOf("name")}
           </div>
 
-          <Button type="submit" kind="success">
+          <Button type="submit" kind="success" disabled={!form.isValid}>
             Salvar novo cliente
           </Button>
         </div>

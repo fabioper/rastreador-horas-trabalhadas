@@ -17,7 +17,7 @@
   font-weight: 700;
   font-family: $font-family;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 5px;
   transition: all .15s ease-in-out;
 }
 
@@ -51,7 +51,7 @@
 
 .buttonSuccess {
   composes: button;
-  background: linear-gradient(90deg, #1bce42 0%, #2393ab 100%);
+  background: linear-gradient(90deg, #3bc258, #0e744a);
   box-shadow: 0 4px 14px rgba(31, 177, 117, 0.23);
   color: #fff;
   padding: 2rem 3rem;
@@ -62,6 +62,14 @@
   }
 
   &:hover {
-    background: linear-gradient(90deg, #23bb44 0%, #1b859b 100%);
+    background: linear-gradient(90deg, #23bb44, #1b859b);
+  }
+
+  &:disabled {
+    background: #2e2f38;
+    box-shadow: none;
+    color: #494b57;
+    cursor: none;
+    pointer-events: none;
   }
 }

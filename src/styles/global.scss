@@ -14,7 +14,7 @@ html, body, #root, .App {
 
 .App {
   display: grid;
-  grid-template-rows: min-content auto min-content;
+  grid-template-rows: min-content auto;
   gap: 3rem;
 }
 
@@ -63,7 +63,17 @@ body {
   gap: 1.5rem;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+}
+
 .form {
+  height: 100%;
+
+  .container {
+    height: 100%;
+  }
 
   .form-control {
     display: flex;
@@ -82,5 +92,31 @@ body {
     font-size: 1.6rem;
     font-family: $font-family;
     max-width: 600px;
+
+    &.invalid {
+      border: 1px solid #ff3c3c;
+      background: #ff3c3c14;
+    }
+  }
+
+  .form-error {
+    color: #ff5e5e;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+
+    svg {
+      display: flex;
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 500px) {
+    button {
+      width: 100%;
+      position: sticky;
+      top: 100%;
+      left: 0;
+    }
   }
 }
