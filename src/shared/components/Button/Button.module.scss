@@ -1,0 +1,49 @@
+@import "src/styles/variables";
+
+.buttonLink {
+  text-decoration: none;
+  color: currentColor;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  font-size: $font-size-regular;
+  background: none;
+  border: 0;
+  padding: 1rem;
+  font-weight: 700;
+  font-family: $font-family;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all .15s ease-in-out;
+}
+
+.buttonIcon {
+  display: flex;
+
+  svg {
+    stroke-width: 2px;
+  }
+}
+
+.buttonLabel {
+  font-weight: 700;
+}
+
+.buttonInline {
+  composes: button;
+  color: #58afff;
+
+  &:hover {
+    background: transparentize(#58afff, .95);
+  }
+}
+
+.buttonPrimary {
+  composes: button;
+  background: $color-button-background-primary;
+  color: $color-foreground;
+}
