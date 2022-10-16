@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<any> {
   icon?: IconType
-  kind?: "primary" | "inline"
+  kind?: "primary" | "inline" | "success"
   to?: string
   children: JSX.Element | string
 }
@@ -17,8 +17,10 @@ export default function Button({ icon: Icon, kind, to, children, ...rest }: Butt
         return styles.buttonInline
       case "primary":
         return styles.buttonPrimary
+      case "success":
+        return styles.buttonSuccess
       default:
-        return styles.button
+        return styles.buttonPrimary
     }
   }, [kind])
 

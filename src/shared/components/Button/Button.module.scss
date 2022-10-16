@@ -48,3 +48,20 @@
   color: $color-foreground;
   padding: 1.5rem;
 }
+
+.buttonSuccess {
+  composes: button;
+  background: linear-gradient(90deg, #1bce42 0%, #2393ab 100%);
+  box-shadow: 0 4px 14px rgba(31, 177, 117, 0.23);
+  color: #fff;
+  padding: 2rem 3rem;
+  margin: 1.5rem 0;
+
+  .buttonLabel {
+    font-size: $font-size-regular;
+  }
+
+  &:hover {
+    background: linear-gradient(90deg, #23bb44 0%, #1b859b 100%);
+  }
+}
