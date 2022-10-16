@@ -23,7 +23,7 @@ export function useForm<T extends FormikValues>({ onSubmit, schema, initialValue
     initialValues: initialValues != null ? (initialValues as T) : ({} as T),
     validationSchema: schema,
     onSubmit,
-    validateOnMount: false,
+    validateOnMount: true,
     validate,
   })
 
