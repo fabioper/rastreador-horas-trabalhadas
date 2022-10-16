@@ -12,7 +12,7 @@ export function Home() {
       <header className="page-header">
         <div className="container">
           <h1 className="page-title">Clientes</h1>
-          <Button icon={FiPlusCircle} kind="inline">
+          <Button icon={FiPlusCircle} kind="inline" to="novo-cliente">
             Novo cliente
           </Button>
         </div>
