@@ -1,10 +1,10 @@
 import React from "react"
-import emptyImage from "../assets/wind-turbine.svg"
 import { useCollection } from "../hooks/useCollection"
 import Button from "../shared/components/Button/Button"
 import { FiPlusCircle } from "react-icons/fi"
 import Client from "../models/dtos/responses/client"
 import ClientCard from "../shared/components/ClientCard/ClientCard"
+import EmptyState from "../shared/components/EmptyState/EmptyState"
 
 export function Home() {
   const { data: clients } = useCollection<Client>("clients", {
@@ -31,12 +31,10 @@ export function Home() {
             ))}
           </div>
 
-          {clients.length === 0 && (
-            <div className="empty-state">
-              <img src={emptyImage} alt="" className="empty-image" />
-              <span>Nenhum cliente cadastrado</span>
-            </div>
-          )}
+          <EmptyState
+            message="Nenhum cliente cadastrado"
+            visible={clients.length === 0}
+          />
         </div>
       </div>
     </main>
