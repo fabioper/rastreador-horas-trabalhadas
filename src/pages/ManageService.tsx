@@ -9,6 +9,7 @@ import Button from "../shared/components/Button/Button"
 import InputCurrency from "../shared/components/InputCurrency/InputCurrency"
 import { useCollection } from "../hooks/useCollection"
 import { number, object, string } from "yup"
+import { useBackwardsPath } from "../shared/contexts/BackwardsContext"
 
 interface ManageServiceRequest {
   name: string
@@ -25,6 +26,8 @@ function ManageService() {
   if (!clientId) {
     return <Navigate to="/" />
   }
+
+  useBackwardsPath(`/${clientId}`)
 
   const { data: client } = useDocument<Client>("clients", clientId)
   const { save } = useCollection(`clients/${clientId}/services`)

@@ -6,6 +6,7 @@ import { useCollection } from "../hooks/useCollection"
 import Client from "../models/dtos/responses/client"
 import { useNavigate } from "react-router-dom"
 import { MdCheck } from "react-icons/md"
+import { useBackwardsPath } from "../shared/contexts/BackwardsContext"
 
 interface NewClientRequest {
   name: string
@@ -15,6 +16,8 @@ export default function ManageClient() {
   const clientsCollection = useCollection<Client>("clients")
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
+
+  useBackwardsPath("/")
 
   const { form, field, isValid, displayErrorOf } = useForm<NewClientRequest>({
     initialValues: { name: "" },

@@ -12,6 +12,7 @@ import Client from "../models/dtos/responses/client"
 import OverlayMenu from "../shared/components/OverlayMenu/OverlayMenu"
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi"
 import { FaTrashAlt } from "react-icons/fa"
+import { useBackwardsPath } from "../shared/contexts/BackwardsContext"
 
 export default function Services() {
   const { clientId } = useParams<{ clientId: string }>()
@@ -19,6 +20,8 @@ export default function Services() {
   if (!clientId) {
     return <Navigate to="/" />
   }
+
+  useBackwardsPath(`/`)
 
   const { data: client } = useDocument<Client>("clients", clientId)
 
