@@ -19,18 +19,14 @@ export function useCollection<T extends Model<any>>(
 ) {
   const [data, setData] = useState<T[]>([])
 
-  const typeConverter = {
+  const collectionRef = collection(db, collectionName).withConverter<T>({
     toFirestore(modelObject: WithFieldValue<T>): DocumentData {
       return { ...modelObject }
     },
     fromFirestore(snapshot: QueryDocumentSnapshot): T {
       return { id: snapshot.id, ...snapshot.data() } as T
     },
-  }
-
-  const collectionRef = collection(db, collectionName).withConverter<T>(
-    typeConverter
-  )
+  })
 
   const mountQuery = useCallback(() => {
     let queries: QueryConstraint[] = []
