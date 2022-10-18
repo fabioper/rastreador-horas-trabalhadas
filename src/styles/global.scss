@@ -57,6 +57,23 @@ body {
   }
 }
 
+.section-header {
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2rem auto;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $color-foreground;
+    padding: 0;
+    margin: 0;
+  }
+}
+
 .card-listing {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

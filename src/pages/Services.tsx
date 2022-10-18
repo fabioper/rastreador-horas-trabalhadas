@@ -6,6 +6,9 @@ import { useCollection } from "../hooks/useCollection"
 import ServiceCard from "../shared/components/ServiceCard/ServiceCard"
 import Service from "../models/dtos/responses/service"
 import EmptyState from "../shared/components/EmptyState/EmptyState"
+import useDocument from "../hooks/useDocument"
+import Loader from "../shared/components/Loader/Loader"
+import Client from "../models/dtos/responses/client"
 
 export default function Services() {
   const { clientId } = useParams<{ clientId: string }>()
@@ -13,6 +16,8 @@ export default function Services() {
   if (!clientId) {
     return <Navigate to="/" />
   }
+
+  const { data: client } = useDocument<Client>("clients", clientId)
 
   const { data: services } = useCollection<Service>(
     `clients/${clientId}/services`,
@@ -22,11 +27,21 @@ export default function Services() {
     }
   )
 
+  if (!client) {
+    return <Loader />
+  }
+
   return (
     <main>
       <header className="page-header">
         <div className="container">
-          <h1 className="page-title">Serviços</h1>
+          <h1 className="page-title">{client.name}</h1>
+        </div>
+      </header>
+
+      <div className="section-header">
+        <div className="container">
+          <h1 className="section-title">Serviços</h1>
           <Button
             icon={FiPlusCircle}
             kind="inline"
@@ -36,17 +51,13 @@ export default function Services() {
             Novo serviço
           </Button>
         </div>
-      </header>
+      </div>
 
       <div>
         <div className="container">
           <div className="card-listing">
             {services.map((service) => (
-              <ServiceCard
-                clientId={clientId}
-                service={service}
-                key={service.id}
-              />
+              <ServiceCard client={client} service={service} key={service.id} />
             ))}
           </div>
 

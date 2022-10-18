@@ -1,13 +1,14 @@
 import React, { useMemo } from "react"
 import Card from "../Card/Card"
 import Service from "../../../models/dtos/responses/service"
+import Client from "../../../models/dtos/responses/client"
 
 interface ServiceCardProps {
   service: Service
-  clientId: string
+  client: Client
 }
 
-function ServiceCard({ clientId, service }: ServiceCardProps) {
+function ServiceCard({ client, service }: ServiceCardProps) {
   const clientCardBorderColor = "#CE9C1B"
 
   const description = useMemo(() => {
@@ -22,7 +23,7 @@ function ServiceCard({ clientId, service }: ServiceCardProps) {
     <Card
       title={service.name}
       key={service.id}
-      path={`/${clientId}/services/${service.id}`}
+      path={`/${client.id}/services/${service.id}`}
       description={description}
       borderColor={clientCardBorderColor}
     />
