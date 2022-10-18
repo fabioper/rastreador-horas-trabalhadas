@@ -1,6 +1,6 @@
 import React from "react"
 import Button from "../shared/components/Button/Button"
-import { FiPlusCircle } from "react-icons/fi"
+import { FiEdit, FiPlusCircle } from "react-icons/fi"
 import { Navigate, useParams } from "react-router-dom"
 import { useCollection } from "../hooks/useCollection"
 import ServiceCard from "../shared/components/ServiceCard/ServiceCard"
@@ -9,6 +9,9 @@ import EmptyState from "../shared/components/EmptyState/EmptyState"
 import useDocument from "../hooks/useDocument"
 import Loader from "../shared/components/Loader/Loader"
 import Client from "../models/dtos/responses/client"
+import OverlayMenu from "../shared/components/OverlayMenu/OverlayMenu"
+import { HiOutlineDotsCircleHorizontal } from "react-icons/hi"
+import { FaTrashAlt } from "react-icons/fa"
 
 export default function Services() {
   const { clientId } = useParams<{ clientId: string }>()
@@ -32,6 +35,13 @@ export default function Services() {
       <header className="page-header">
         <div className="container">
           <h1 className="page-title">{client.name}</h1>
+          <OverlayMenu
+            icon={HiOutlineDotsCircleHorizontal}
+            options={[
+              { label: "Remover cliente", icon: FaTrashAlt },
+              { label: "Editar cliente", icon: FiEdit },
+            ]}
+          />
         </div>
       </header>
 
