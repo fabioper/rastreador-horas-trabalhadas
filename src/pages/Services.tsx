@@ -20,11 +20,7 @@ export default function Services() {
   const { data: client } = useDocument<Client>("clients", clientId)
 
   const { data: services } = useCollection<Service>(
-    `clients/${clientId}/services`,
-    {
-      orderBy: "createdDate",
-      dir: "desc",
-    }
+    `clients/${clientId}/services`
   )
 
   if (!client) {

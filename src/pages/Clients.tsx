@@ -7,10 +7,7 @@ import ClientCard from "../shared/components/ClientCard/ClientCard"
 import EmptyState from "../shared/components/EmptyState/EmptyState"
 
 export default function Clients() {
-  const { data: clients } = useCollection<Client>("clients", {
-    orderBy: "createdDate",
-    dir: "desc",
-  })
+  const { data: clients } = useCollection<Client>("clients")
 
   return (
     <main>

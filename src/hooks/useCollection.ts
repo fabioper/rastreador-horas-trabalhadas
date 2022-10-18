@@ -13,9 +13,17 @@ import {
 import { db } from "../services/firebase"
 import Model from "../models/dtos/responses/model"
 
+interface UseCollectionOpts<T extends Model<any>> {
+  orderBy?: keyof T & string
+  dir?: "desc" | "asc"
+}
+
 export function useCollection<T extends Model<any>>(
   collectionName: string,
-  opts?: { orderBy?: keyof T & string; dir?: "desc" | "asc" }
+  opts: UseCollectionOpts<T> = {
+    orderBy: "createdDate",
+    dir: "desc",
+  }
 ) {
   const [data, setData] = useState<T[]>([])
 
