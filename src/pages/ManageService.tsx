@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Navigate, useNavigate, useParams } from "react-router-dom"
 import useDocument from "../hooks/useDocument"
 import Client from "../models/dtos/responses/client"
@@ -31,6 +31,11 @@ function ManageService() {
 
   const { form, field, displayErrorOf, isValid } =
     useForm<ManageServiceRequest>({
+      initialValues: {
+        name: "",
+        estimatedHoursTotal: 0,
+        hourValue: 0,
+      },
       schema: object({
         name: string().required("É obrigatório informar o nome do serviço"),
         hourValue: number().required(
@@ -56,6 +61,10 @@ function ManageService() {
     }
   }
 
+  const estimatedTotalBudget = useMemo(() => {
+    return form.values.hourValue * (form.values.estimatedHoursTotal ?? 0)
+  }, [form.values.hourValue, form.values.estimatedHoursTotal])
+
   if (!client) {
     return <Loader />
   }
@@ -66,7 +75,10 @@ function ManageService() {
         <div className="container">
           <h1 className="page-title">Novo Serviço</h1>
           <p className="page-subtitle">
-            Para cliente: <span className="client-name">{client.name}</span>
+            Para:{" "}
+            <Button kind="link" to={`/${clientId}`}>
+              {client.name}
+            </Button>
           </p>
         </div>
       </header>
@@ -112,6 +124,19 @@ function ManageService() {
               }`}
             />
             {displayErrorOf("estimatedHoursTotal")}
+          </div>
+
+          <div className="form-control">
+            <label htmlFor="estimatedTotalBudget" className="form-label">
+              Estimativa de total à receber:
+            </label>
+            <InputCurrency
+              readonly
+              id="estimatedTotalBudget"
+              name="estimatedTotalBudget"
+              value={estimatedTotalBudget}
+              className="form-input"
+            />
           </div>
 
           <Button

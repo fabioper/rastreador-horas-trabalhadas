@@ -1,6 +1,6 @@
 @import "src/styles/variables";
 
-.buttonLink {
+.buttonLinkWrapper {
   text-decoration: none;
   color: currentColor;
 }
@@ -83,6 +83,20 @@
     color: #494b57;
     cursor: none;
     pointer-events: none;
+  }
+}
+
+.buttonLink {
+  background: none;
+  font-size: $font-size-regular;
+  font-weight: 700;
+  color: #4ec6e0;
+  border: none;
+  text-decoration: underline;
+  text-underline-offset: .5rem;
+
+  &:active {
+    color: #4ee0ca;
   }
 }
 

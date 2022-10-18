@@ -11,9 +11,10 @@ interface InputCurrencyProps {
   name: string
   value?: number
   disabled?: boolean
+  readonly?: boolean
   className?: string
   autoFocus?: boolean
-  onChange: (value: number | undefined) => any
+  onChange?: (value: number | undefined) => any
   onBlur?: React.FocusEventHandler<HTMLInputElement>
 }
 
@@ -23,6 +24,7 @@ const InputCurrency: React.FC<InputCurrencyProps> = ({
   name,
   onChange,
   disabled,
+  readonly,
   className,
   autoFocus,
   onBlur,
@@ -30,13 +32,13 @@ const InputCurrency: React.FC<InputCurrencyProps> = ({
   const [rawValue, setRawValue] = useState<number>(0)
 
   useEffect(() => {
-    if (value && value !== rawValue) {
+    if (value !== undefined && value !== rawValue) {
       setRawValue(value)
     }
   }, [value])
 
   useEffect(() => {
-    onChange(rawValue)
+    onChange?.(rawValue)
   }, [rawValue])
 
   const maskedValue = useMemo(() => {
@@ -68,6 +70,7 @@ const InputCurrency: React.FC<InputCurrencyProps> = ({
       onBlur={onBlur}
       value={maskedValue}
       onChange={(ev) => handleValueChange(ev)}
+      readOnly={readonly}
     />
   )
 }

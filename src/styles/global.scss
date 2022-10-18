@@ -60,11 +60,7 @@ body {
 
   .page-subtitle {
     color: $color-secondary-foreground;
-
-    span {
-      font-weight: 700;
-      color: #4ec6e0;
-    }
+    width: 100%;
   }
 }
 
@@ -132,6 +128,10 @@ main {
     gap: 1.5rem;
   }
 
+  button {
+    align-self: flex-start;
+  }
+
   .form-control {
     display: flex;
     flex-direction: column;
@@ -149,6 +149,10 @@ main {
     font-size: 1.6rem;
     font-family: $font-family;
     max-width: 600px;
+
+    &:read-only {
+      color: #a1a3ab;
+    }
 
     &.invalid {
       border: 1px solid #ff3c3c;
@@ -172,12 +176,19 @@ main {
     margin-bottom: 8rem;
 
     button {
-      width: calc(100% - 2rem);
-      position: fixed;
-      bottom: 0;
-      margin: 2rem 1rem;
-      left: 0;
+      width: 100%;
+      margin: 2rem 0;
     }
+
+    /*&:not(:focus-within) {
+      button {
+        width: calc(100% - 2rem);
+        margin: 1rem 1rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+    }*/
   }
 }
 
