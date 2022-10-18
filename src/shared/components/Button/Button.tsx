@@ -36,7 +36,7 @@ export default function Button({
     }
   }, [kind])
 
-  const isDisabled = useMemo(() => disabled ?? loading, [disabled, loading])
+  const isDisabled = useMemo(() => disabled || loading, [disabled, loading])
 
   const buttonContent = (
     <>

@@ -94,6 +94,11 @@
   border: none;
   text-decoration: underline;
   text-underline-offset: .5rem;
+  cursor: pointer;
+
+  &:hover {
+    color: #4eb4e0;
+  }
 
   &:active {
     color: #4ee0ca;
