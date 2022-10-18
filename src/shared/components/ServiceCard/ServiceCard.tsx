@@ -23,7 +23,7 @@ function ServiceCard({ client, service }: ServiceCardProps) {
     <Card
       title={service.name}
       key={service.id}
-      path={`/${client.id}/services/${service.id}`}
+      path={`/${client.id}`}
       description={description}
       borderColor={clientCardBorderColor}
     />
