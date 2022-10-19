@@ -1,40 +1,27 @@
 import React from "react"
-import Button from "../shared/components/Button/Button"
+import Button from "../../shared/components/Button/Button"
 import { FiEdit, FiPlusCircle } from "react-icons/fi"
-import { Navigate, useNavigate, useParams } from "react-router-dom"
-import { useCollection } from "../hooks/useCollection"
-import ServiceCard from "../shared/components/ServiceCard/ServiceCard"
-import Service from "../models/dtos/responses/service"
-import EmptyState from "../shared/components/EmptyState/EmptyState"
-import useDocument from "../hooks/useDocument"
-import Loader from "../shared/components/Loader/Loader"
-import Client from "../models/dtos/responses/client"
-import OverlayMenu from "../shared/components/OverlayMenu/OverlayMenu"
+import { useNavigate, useOutletContext } from "react-router-dom"
+import { useCollection } from "../../hooks/useCollection"
+import ServiceCard from "../../shared/components/ServiceCard/ServiceCard"
+import Service from "../../models/dtos/responses/service"
+import EmptyState from "../../shared/components/EmptyState/EmptyState"
+import Client from "../../models/dtos/responses/client"
+import OverlayMenu from "../../shared/components/OverlayMenu/OverlayMenu"
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi"
 import { FaTrashAlt } from "react-icons/fa"
-import { useBackwardsPath } from "../shared/contexts/BackwardsContext"
+import { useBackwardsPath } from "../../shared/contexts/BackwardsContext"
 
 export default function Services() {
-  const { clientId } = useParams<{ clientId: string }>()
-  const navigate = useNavigate()
-
-  if (!clientId) {
-    return <Navigate to="/" />
-  }
-
-  useBackwardsPath(`/`)
-
-  const { data: client } = useDocument<Client>("clients", clientId)
-
+  const { client } = useOutletContext<{ client: Client }>()
   const { remove } = useCollection<Client>("clients")
-
   const { data: services } = useCollection<Service>(
-    `clients/${clientId}/services`
+    `clients/${client.id}/services`
   )
 
-  if (!client) {
-    return <Loader />
-  }
+  const navigate = useNavigate()
+
+  useBackwardsPath(`/`)
 
   return (
     <main>
@@ -48,14 +35,14 @@ export default function Services() {
                 label: "Remover cliente",
                 icon: FaTrashAlt,
                 onClick: async () => {
-                  await remove(clientId)
+                  await remove(client.id)
                   return navigate("/")
                 },
               },
               {
                 label: "Editar cliente",
                 icon: FiEdit,
-                path: `/${clientId}/editar`,
+                path: `/${client.id}/editar`,
               },
             ]}
           />
@@ -68,7 +55,7 @@ export default function Services() {
           <Button
             icon={FiPlusCircle}
             kind="inline"
-            to={`/${clientId}/novo-servico`}
+            to={`/${client.id}/novo-servico`}
             style={{ color: "#CE9C1B" }}
           >
             Novo serviço

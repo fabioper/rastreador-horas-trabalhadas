@@ -1,15 +1,13 @@
 import React, { useMemo, useState } from "react"
-import { Navigate, useNavigate, useParams } from "react-router-dom"
-import useDocument from "../hooks/useDocument"
-import Client from "../models/dtos/responses/client"
-import Loader from "../shared/components/Loader/Loader"
-import { useForm } from "../hooks/useForm"
+import { useNavigate, useOutletContext } from "react-router-dom"
+import Client from "../../models/dtos/responses/client"
+import { useForm } from "../../hooks/useForm"
 import { MdCheck } from "react-icons/md"
-import Button from "../shared/components/Button/Button"
-import InputCurrency from "../shared/components/InputCurrency/InputCurrency"
-import { useCollection } from "../hooks/useCollection"
+import Button from "../../shared/components/Button/Button"
+import InputCurrency from "../../shared/components/InputCurrency/InputCurrency"
+import { useCollection } from "../../hooks/useCollection"
 import { number, object, string } from "yup"
-import { useBackwardsPath } from "../shared/contexts/BackwardsContext"
+import { useBackwardsPath } from "../../shared/contexts/BackwardsContext"
 
 interface ManageServiceRequest {
   name: string
@@ -18,19 +16,10 @@ interface ManageServiceRequest {
 }
 
 function ManageService() {
-  const navigate = useNavigate()
+  const { client } = useOutletContext<{ client: Client }>()
   const [loading, setLoading] = useState(false)
-
-  const { clientId } = useParams<{ clientId: string }>()
-
-  if (!clientId) {
-    return <Navigate to="/" />
-  }
-
-  useBackwardsPath(`/${clientId}`)
-
-  const { data: client } = useDocument<Client>("clients", clientId)
-  const { save } = useCollection(`clients/${clientId}/services`)
+  const { save } = useCollection(`clients/${client.id}/services`)
+  const navigate = useNavigate()
 
   const { form, field, displayErrorOf, isValid } =
     useForm<ManageServiceRequest>({
@@ -49,13 +38,15 @@ function ManageService() {
       onSubmit,
     })
 
+  useBackwardsPath(`/${client.id}`)
+
   async function onSubmit(values: ManageServiceRequest) {
     setLoading(true)
     try {
-      if (clientId && form.isValid) {
+      if (client && form.isValid) {
         await save(values)
         form.resetForm()
-        navigate(`/${clientId}`)
+        navigate(`/${client.id}`)
       }
     } catch (e) {
       console.error(e)
@@ -68,10 +59,6 @@ function ManageService() {
     return form.values.hourValue * (form.values.estimatedHoursTotal ?? 0)
   }, [form.values.hourValue, form.values.estimatedHoursTotal])
 
-  if (!client) {
-    return <Loader />
-  }
-
   return (
     <main>
       <header className="page-header">
@@ -79,7 +66,7 @@ function ManageService() {
           <h1 className="page-title">Novo Serviço</h1>
           <p className="page-subtitle">
             Para:{" "}
-            <Button kind="link" to={`/${clientId}`}>
+            <Button kind="link" to={`/${client.id}`}>
               {client.name}
             </Button>
           </p>
