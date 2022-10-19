@@ -43,13 +43,20 @@
   align-items: center;
   gap: .8rem;
   background: #141418;
-  padding: 1.5rem 3.5rem 1.5rem 4rem;
   user-select: none;
   cursor: pointer;
   position: relative;
 
+  &:not(:has(.overlayMenuOptionLink)) {
+    padding: 1.5rem 3.5rem 1.5rem 4rem;
+  }
+
   &:hover {
     background: #17171c;
+  }
+
+  &:active {
+    background: #1c1d23;
   }
 
   & + & {
@@ -72,4 +79,7 @@
 }
 
 .overlayMenuOptionLink {
+  color: currentColor;
+  text-decoration: none;
+  padding: 1.5rem 3.5rem 1.5rem 4rem;
 }

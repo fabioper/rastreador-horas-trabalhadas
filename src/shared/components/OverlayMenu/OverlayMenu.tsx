@@ -8,7 +8,7 @@ export interface OverlayMenuOption {
   icon: IconType
   label: string
   path?: string
-  onClick?: () => void
+  onClick?: () => Promise<void>
 }
 
 interface OverlayMenuProps {

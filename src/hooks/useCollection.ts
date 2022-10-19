@@ -2,12 +2,15 @@ import { useCallback, useEffect, useState } from "react"
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   DocumentData,
   onSnapshot,
   orderBy,
   query,
   QueryConstraint,
   QueryDocumentSnapshot,
+  updateDoc,
   WithFieldValue,
 } from "firebase/firestore"
 import { db } from "../services/firebase"
@@ -60,5 +63,15 @@ export function useCollection<T extends Model<any>>(
     await addDoc(collectionRef, { ...doc, createdDate: new Date() })
   }
 
-  return { data, save }
+  async function update(docId: string, data: any) {
+    const ref = doc(db, collectionName, docId)
+    await updateDoc(ref, { ...data })
+  }
+
+  async function remove(docId: string) {
+    const foundDoc = doc(db, `${collectionName}/${docId}`)
+    await deleteDoc(foundDoc)
+  }
+
+  return { data, save, remove, update }
 }

@@ -1,12 +1,13 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Button from "../shared/components/Button/Button"
 import { useForm } from "../hooks/useForm"
 import { object, string } from "yup"
 import { useCollection } from "../hooks/useCollection"
 import Client from "../models/dtos/responses/client"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { MdCheck } from "react-icons/md"
 import { useBackwardsPath } from "../shared/contexts/BackwardsContext"
+import useDocument from "../hooks/useDocument"
 
 interface NewClientRequest {
   name: string
@@ -17,7 +18,11 @@ export default function ManageClient() {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
-  useBackwardsPath("/")
+  const { clientId } = useParams<{ clientId: string }>()
+
+  useBackwardsPath(clientId ? `/${clientId}` : "/")
+
+  const { data: client } = useDocument<Client>("clients", clientId)
 
   const { form, field, isValid, displayErrorOf } = useForm<NewClientRequest>({
     initialValues: { name: "" },
@@ -27,11 +32,25 @@ export default function ManageClient() {
     onSubmit,
   })
 
+  useEffect(() => {
+    if (client) {
+      void form.setValues({ ...client })
+    }
+  }, [client])
+
+  async function saveChanges(values: NewClientRequest): Promise<void> {
+    if (!client) {
+      await clientsCollection.save(values)
+    } else {
+      await clientsCollection.update(client.id, values)
+    }
+  }
+
   async function onSubmit(values: NewClientRequest) {
     setIsLoading(true)
     try {
       if (form.isValid) {
-        await clientsCollection.save(values)
+        await saveChanges(values)
         form.resetForm()
         navigate("/")
       }

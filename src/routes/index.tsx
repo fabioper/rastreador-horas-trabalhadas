@@ -18,6 +18,7 @@ function Router() {
         <Route path="/" element={<Clients />} />
         <Route path="/novo-cliente" element={<ManageClient />} />
         <Route path="/:clientId" element={<Services />} />
+        <Route path="/:clientId/editar" element={<ManageClient />} />
         <Route path="/:clientId/novo-servico" element={<ManageService />} />
       </Routes>
     </React.Suspense>

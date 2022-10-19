@@ -1,7 +1,7 @@
 import React from "react"
 import Button from "../shared/components/Button/Button"
 import { FiEdit, FiPlusCircle } from "react-icons/fi"
-import { Navigate, useParams } from "react-router-dom"
+import { Navigate, useNavigate, useParams } from "react-router-dom"
 import { useCollection } from "../hooks/useCollection"
 import ServiceCard from "../shared/components/ServiceCard/ServiceCard"
 import Service from "../models/dtos/responses/service"
@@ -16,6 +16,7 @@ import { useBackwardsPath } from "../shared/contexts/BackwardsContext"
 
 export default function Services() {
   const { clientId } = useParams<{ clientId: string }>()
+  const navigate = useNavigate()
 
   if (!clientId) {
     return <Navigate to="/" />
@@ -24,6 +25,8 @@ export default function Services() {
   useBackwardsPath(`/`)
 
   const { data: client } = useDocument<Client>("clients", clientId)
+
+  const { remove } = useCollection<Client>("clients")
 
   const { data: services } = useCollection<Service>(
     `clients/${clientId}/services`
@@ -41,8 +44,19 @@ export default function Services() {
           <OverlayMenu
             icon={HiOutlineDotsCircleHorizontal}
             options={[
-              { label: "Remover cliente", icon: FaTrashAlt },
-              { label: "Editar cliente", icon: FiEdit },
+              {
+                label: "Remover cliente",
+                icon: FaTrashAlt,
+                onClick: async () => {
+                  await remove(clientId)
+                  return navigate("/")
+                },
+              },
+              {
+                label: "Editar cliente",
+                icon: FiEdit,
+                path: `/${clientId}/editar`,
+              },
             ]}
           />
         </div>
