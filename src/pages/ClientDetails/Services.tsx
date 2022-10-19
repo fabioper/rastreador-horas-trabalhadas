@@ -35,7 +35,7 @@ export default function Services() {
                 label: "Remover cliente",
                 icon: FaTrashAlt,
                 onClick: async () => {
-                  await remove(client.id)
+                  await remove(client.id, "services")
                   return navigate("/")
                 },
               },

@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react"
-import { useNavigate, useOutletContext } from "react-router-dom"
+import React, { useEffect, useMemo, useState } from "react"
+import { useNavigate, useOutletContext, useParams } from "react-router-dom"
 import Client from "../../models/dtos/responses/client"
 import { useForm } from "../../hooks/useForm"
 import { MdCheck } from "react-icons/md"
@@ -8,6 +8,8 @@ import InputCurrency from "../../shared/components/InputCurrency/InputCurrency"
 import { useCollection } from "../../hooks/useCollection"
 import { number, object, string } from "yup"
 import { useBackwardsPath } from "../../shared/contexts/BackwardsContext"
+import useDocument from "../../hooks/useDocument"
+import Service from "../../models/dtos/responses/service"
 
 interface ManageServiceRequest {
   name: string
@@ -18,8 +20,14 @@ interface ManageServiceRequest {
 function ManageService() {
   const { client } = useOutletContext<{ client: Client }>()
   const [loading, setLoading] = useState(false)
-  const { save } = useCollection(`clients/${client.id}/services`)
+  const { save, update } = useCollection(`clients/${client.id}/services`)
   const navigate = useNavigate()
+  const { serviceId } = useParams<{ serviceId: string }>()
+
+  const { data: service } = useDocument<Service>(
+    `clients/${client.id}/services`,
+    serviceId
+  )
 
   const { form, field, displayErrorOf, isValid } =
     useForm<ManageServiceRequest>({
@@ -38,15 +46,29 @@ function ManageService() {
       onSubmit,
     })
 
-  useBackwardsPath(`/${client.id}`)
+  useEffect(() => {
+    if (service) {
+      void form.setValues({ ...service })
+    }
+  }, [service])
+
+  useBackwardsPath(service ? `/${client.id}/${service.id}` : `/${client.id}`)
+
+  async function saveChanges(values: ManageServiceRequest): Promise<void> {
+    if (!service) {
+      await save(values)
+    } else {
+      await update(service.id, values)
+    }
+  }
 
   async function onSubmit(values: ManageServiceRequest) {
     setLoading(true)
     try {
       if (client && form.isValid) {
-        await save(values)
+        await saveChanges(values)
         form.resetForm()
-        navigate(`/${client.id}`)
+        navigate(service ? `/${client.id}/${service.id}` : `/${client.id}`)
       }
     } catch (e) {
       console.error(e)
@@ -93,6 +115,7 @@ function ManageService() {
             <InputCurrency
               id="hourValue"
               name="hourValue"
+              value={form.values.hourValue}
               onChange={async (value) =>
                 await form.setFieldValue("hourValue", value)
               }
@@ -136,7 +159,7 @@ function ManageService() {
             icon={MdCheck}
             loading={loading}
           >
-            Salvar novo serviço
+            {service ? "Atualizar serviço" : "Salvar novo serviço"}
           </Button>
         </div>
       </form>

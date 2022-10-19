@@ -52,7 +52,7 @@ export default function ManageClient() {
       if (form.isValid) {
         await saveChanges(values)
         form.resetForm()
-        navigate("/")
+        navigate(client ? `/${client.id}` : "/")
       }
     } catch (e) {
       console.error(e)
@@ -91,7 +91,7 @@ export default function ManageClient() {
             icon={MdCheck}
             loading={isLoading}
           >
-            Salvar novo cliente
+            {client ? "Atualizar cliente" : "Salvar novo cliente"}
           </Button>
         </div>
       </form>

@@ -37,6 +37,10 @@ function Router() {
           <Route path="/:clientId/editar" element={<ManageClient />} />
           <Route path="/:clientId/novo-servico" element={<ManageService />} />
           <Route path="/:clientId/:serviceId" element={<ServiceDetails />} />
+          <Route
+            path="/:clientId/:serviceId/editar"
+            element={<ManageService />}
+          />
         </Route>
       </Routes>
     </React.Suspense>

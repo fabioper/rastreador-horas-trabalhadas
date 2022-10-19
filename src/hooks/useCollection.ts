@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
   DocumentData,
+  FirestoreDataConverter,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -30,15 +32,6 @@ export function useCollection<T extends Model<any>>(
 ) {
   const [data, setData] = useState<T[]>([])
 
-  const collectionRef = collection(db, collectionName).withConverter<T>({
-    toFirestore(modelObject: WithFieldValue<T>): DocumentData {
-      return { ...modelObject }
-    },
-    fromFirestore(snapshot: QueryDocumentSnapshot): T {
-      return { id: snapshot.id, ...snapshot.data() } as T
-    },
-  })
-
   const mountQuery = useCallback(() => {
     let queries: QueryConstraint[] = []
 
@@ -49,15 +42,21 @@ export function useCollection<T extends Model<any>>(
     return query(collectionRef, ...queries)
   }, [])
 
-  useEffect(() => {
-    const collectionQuery = mountQuery()
+  const converter = useMemo(
+    (): FirestoreDataConverter<T> => ({
+      toFirestore(modelObject: WithFieldValue<T>): DocumentData {
+        return { ...modelObject }
+      },
+      fromFirestore(snapshot: QueryDocumentSnapshot): T {
+        return { id: snapshot.id, ...snapshot.data() } as T
+      },
+    }),
+    []
+  )
 
-    const unsubscribe = onSnapshot<T>(collectionQuery, (result) => {
-      setData(result.docs.map((doc) => doc.data()))
-    })
-
-    return () => unsubscribe()
-  }, [])
+  const collectionRef = collection(db, collectionName).withConverter<T>(
+    converter
+  )
 
   async function save(doc: any) {
     await addDoc(collectionRef, { ...doc, createdDate: new Date() })
@@ -68,10 +67,40 @@ export function useCollection<T extends Model<any>>(
     await updateDoc(ref, { ...data })
   }
 
-  async function remove(docId: string) {
+  async function remove(docId: string, ...subCollections: string[]) {
     const foundDoc = doc(db, `${collectionName}/${docId}`)
+
+    if (subCollections.length > 0) {
+      for (const subCollection of subCollections) {
+        const subCollectionRef = collection(
+          db,
+          collectionName,
+          foundDoc.id,
+          subCollection
+        ).withConverter<T>(converter)
+
+        const { docs: subCollectionDocs } = await getDocs<T>(subCollectionRef)
+
+        await Promise.all(
+          subCollectionDocs.map(async (doc) => {
+            await deleteDoc(doc.ref)
+          })
+        )
+      }
+    }
+
     await deleteDoc(foundDoc)
   }
+
+  useEffect(() => {
+    const collectionQuery = mountQuery()
+
+    const unsubscribe = onSnapshot<T>(collectionQuery, (result) => {
+      setData(result.docs.map((doc) => doc.data()))
+    })
+
+    return () => unsubscribe()
+  }, [])
 
   return { data, save, remove, update }
 }
