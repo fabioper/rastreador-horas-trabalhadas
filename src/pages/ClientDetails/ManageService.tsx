@@ -85,7 +85,9 @@ function ManageService() {
     <main>
       <header className="page-header">
         <div className="container">
-          <h1 className="page-title">Novo Serviço</h1>
+          <h1 className="page-title">
+            {service ? "Editar Serviço" : "Novo Serviço"}
+          </h1>
           <p className="page-subtitle">
             Para:{" "}
             <Button kind="link" to={`/${client.id}`}>
