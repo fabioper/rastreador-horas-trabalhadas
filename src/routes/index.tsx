@@ -22,6 +22,10 @@ const ManageService = React.lazy(async () => {
   return await import("../pages/ClientDetails/ManageService")
 })
 
+const ServiceDetails = React.lazy(async () => {
+  return await import("../pages/ClientDetails/ServiceDetails")
+})
+
 function Router() {
   return (
     <React.Suspense fallback={<Loader />}>
@@ -32,6 +36,7 @@ function Router() {
           <Route path="/:clientId/" element={<Services />} />
           <Route path="/:clientId/editar" element={<ManageClient />} />
           <Route path="/:clientId/novo-servico" element={<ManageService />} />
+          <Route path="/:clientId/:serviceId" element={<ServiceDetails />} />
         </Route>
       </Routes>
     </React.Suspense>
