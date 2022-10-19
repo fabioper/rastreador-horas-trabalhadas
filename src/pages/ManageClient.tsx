@@ -65,7 +65,9 @@ export default function ManageClient() {
     <main>
       <header className="page-header">
         <div className="container">
-          <h1 className="page-title">Novo Cliente</h1>
+          <h1 className="page-title">
+            {client ? "Editar Cliente" : "Novo Cliente"}
+          </h1>
         </div>
       </header>
 
