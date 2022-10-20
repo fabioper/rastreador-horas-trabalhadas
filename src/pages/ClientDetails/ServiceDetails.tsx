@@ -45,17 +45,17 @@ function ServiceDetails() {
             icon={HiOutlineDotsCircleHorizontal}
             options={[
               {
+                label: "Editar serviço",
+                icon: FiEdit,
+                path: `/${client.id}/${serviceId}/editar`,
+              },
+              {
                 label: "Remover serviço",
                 icon: FaTrashAlt,
                 onClick: async () => {
                   await remove(serviceId)
                   return navigate(`/${client.id}`)
                 },
-              },
-              {
-                label: "Editar serviço",
-                icon: FiEdit,
-                path: `/${client.id}/${serviceId}/editar`,
               },
             ]}
           />

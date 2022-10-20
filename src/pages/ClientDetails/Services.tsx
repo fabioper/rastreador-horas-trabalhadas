@@ -32,17 +32,17 @@ export default function Services() {
             icon={HiOutlineDotsCircleHorizontal}
             options={[
               {
+                label: "Editar cliente",
+                icon: FiEdit,
+                path: `/${client.id}/editar`,
+              },
+              {
                 label: "Remover cliente",
                 icon: FaTrashAlt,
                 onClick: async () => {
                   await remove(client.id, "services")
                   return navigate("/")
                 },
-              },
-              {
-                label: "Editar cliente",
-                icon: FiEdit,
-                path: `/${client.id}/editar`,
               },
             ]}
           />
