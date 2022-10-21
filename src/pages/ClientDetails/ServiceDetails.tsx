@@ -19,7 +19,7 @@ import Button from "../../shared/components/Button/Button"
 import { WorkingTimeRange } from "../../models/dtos/responses/workingTimeRange"
 import { AiFillPauseCircle } from "react-icons/ai"
 import { Timestamp } from "firebase/firestore"
-import { Duration } from "luxon"
+import Counter from "../../shared/components/Counter/Counter"
 
 function ServiceDetails() {
   const { client } = useOutletContext<{ client: Client }>()
@@ -195,7 +195,7 @@ function ServiceDetails() {
       </header>
 
       <div className="container">
-        <div>Total: {Duration.fromMillis(totalTime).toFormat("hh:mm:ss")}</div>
+        <Counter total={totalTime} />
         <div>{buttonTemplate}</div>
       </div>
     </main>
