@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import useDocument from "../../hooks/useDocument"
 import {
   Navigate,
@@ -18,6 +18,8 @@ import { useCollection } from "../../hooks/useCollection"
 import Button from "../../shared/components/Button/Button"
 import { WorkingTimeRange } from "../../models/dtos/responses/workingTimeRange"
 import { AiFillPauseCircle } from "react-icons/ai"
+import { Timestamp } from "firebase/firestore"
+import { Duration } from "luxon"
 
 function ServiceDetails() {
   const { client } = useOutletContext<{ client: Client }>()
@@ -27,15 +29,17 @@ function ServiceDetails() {
     `clients/${client.id}/services`,
     serviceId
   )
-  useBackwardsPath(`/${client.id}`)
+  const { remove, update } = useCollection<Service>(
+    `clients/${client.id}/services`
+  )
 
   if (!serviceId) {
     return <Navigate to={`/${client.id}`} />
   }
 
-  const { remove, update } = useCollection<Service>(
-    `clients/${client.id}/services`
-  )
+  useBackwardsPath(`/${client.id}`)
+
+  const [totalTime, setTotalTime] = useState(0)
 
   const currentWorkingTime = useMemo(() => {
     const ranges = service?.workingTimeRanges ?? []
@@ -55,9 +59,37 @@ function ServiceDetails() {
     [currentWorkingTime]
   )
 
+  useEffect(() => {
+    const timeUntilNow =
+      service?.workingTimeRanges
+        ?.filter((range) => !!range.endDate)
+        ?.map((range) => {
+          const start = range.startDate.toDate()
+          const end = range.endDate?.toDate() ?? new Date()
+          return end.getTime() - start.getTime()
+        })
+        .reduce((a, b) => a + b) ?? 0
+
+    if (service?.workingTimeRanges && isRunning && currentWorkingTime) {
+      const intervalId = setInterval(() => {
+        setTotalTime(
+          timeUntilNow +
+            (new Date().getTime() -
+              currentWorkingTime.startDate.toDate().getTime())
+        )
+      }, 100)
+
+      return () => {
+        clearInterval(intervalId)
+      }
+    }
+
+    setTotalTime(timeUntilNow)
+  }, [currentWorkingTime])
+
   const initWorkingTime = useCallback(
     async (service: Service) => {
-      const range = { startDate: new Date() } as WorkingTimeRange
+      const range = { startDate: Timestamp.now() } as WorkingTimeRange
       await update(service.id, { workingTimeRanges: [range] })
     },
     [currentWorkingTime]
@@ -66,7 +98,7 @@ function ServiceDetails() {
   const resumeWorkingTime = useCallback(
     async (service: Service) => {
       const workingRanges = service.workingTimeRanges ?? []
-      const range = { startDate: new Date() } as WorkingTimeRange
+      const range = { startDate: Timestamp.now() } as WorkingTimeRange
       await update(service.id, {
         ...service,
         workingTimeRanges: [...workingRanges, range],
@@ -79,7 +111,7 @@ function ServiceDetails() {
     async (service: Service) => {
       const range = {
         ...currentWorkingTime,
-        endDate: new Date(),
+        endDate: Timestamp.now(),
       } as WorkingTimeRange
 
       const workingRanges = service.workingTimeRanges ?? []
@@ -162,7 +194,10 @@ function ServiceDetails() {
         </div>
       </header>
 
-      <div>{buttonTemplate}</div>
+      <div className="container">
+        <div>Total: {Duration.fromMillis(totalTime).toFormat("hh:mm:ss")}</div>
+        <div>{buttonTemplate}</div>
+      </div>
     </main>
   )
 }
