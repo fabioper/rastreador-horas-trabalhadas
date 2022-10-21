@@ -10,6 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<any> {
   to?: string
   children: JSX.Element | string
   loading?: boolean
+  onClick?: () => any
 }
 
 export default function Button({
