@@ -74,7 +74,7 @@
   }
 
   &:hover {
-    background: linear-gradient(90deg, #23bb44, #1b859b);
+    opacity: .95;
   }
 
   &:disabled {
@@ -84,6 +84,12 @@
     cursor: none;
     pointer-events: none;
   }
+}
+
+.buttonDanger {
+  composes: buttonSuccess;
+  background: #2f343b none;
+  box-shadow: none;
 }
 
 .buttonLink {

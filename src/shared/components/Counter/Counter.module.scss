@@ -1,0 +1,15 @@
+.counterWrapper {
+  background: #1e232c;
+  height: 50vh;
+  width: 50vh;
+  margin: 3rem auto;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.counterTime {
+  font-size: 4rem;
+  font-weight: 700;
+}

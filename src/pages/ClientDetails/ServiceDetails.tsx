@@ -17,9 +17,9 @@ import OverlayMenu from "../../shared/components/OverlayMenu/OverlayMenu"
 import { useCollection } from "../../hooks/useCollection"
 import Button from "../../shared/components/Button/Button"
 import { WorkingTimeRange } from "../../models/dtos/responses/workingTimeRange"
-import { AiFillPauseCircle } from "react-icons/ai"
 import { Timestamp } from "firebase/firestore"
 import Counter from "../../shared/components/Counter/Counter"
+import { MdPauseCircleFilled } from "react-icons/md"
 
 function ServiceDetails() {
   const { client } = useOutletContext<{ client: Client }>()
@@ -130,7 +130,11 @@ function ServiceDetails() {
   )
 
   const initButtonTemplate = (
-    <Button onClick={() => service && initWorkingTime(service)} icon={FaPlay}>
+    <Button
+      onClick={() => service && initWorkingTime(service)}
+      icon={FaPlay}
+      kind="success"
+    >
       Iniciar
     </Button>
   )
@@ -138,14 +142,19 @@ function ServiceDetails() {
   const pauseButtonTemplate = (
     <Button
       onClick={() => service && pauseWorkingTime(service)}
-      icon={AiFillPauseCircle}
+      icon={MdPauseCircleFilled}
+      kind="danger"
     >
       Pausar
     </Button>
   )
 
   const resumeButtonTemplate = (
-    <Button onClick={() => service && resumeWorkingTime(service)} icon={FaPlay}>
+    <Button
+      onClick={() => service && resumeWorkingTime(service)}
+      icon={FaPlay}
+      kind="success"
+    >
       Retomar
     </Button>
   )
@@ -196,7 +205,7 @@ function ServiceDetails() {
 
       <div className="container">
         <Counter total={totalTime} />
-        <div>{buttonTemplate}</div>
+        <div className="timer-button">{buttonTemplate}</div>
       </div>
     </main>
   )

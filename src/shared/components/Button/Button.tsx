@@ -6,7 +6,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<any> {
   icon?: IconType
-  kind?: "primary" | "inline" | "link" | "success"
+  kind?: "primary" | "inline" | "link" | "success" | "danger"
   to?: string
   children: JSX.Element | string
   loading?: boolean
@@ -30,6 +30,8 @@ export default function Button({
         return styles.buttonPrimary
       case "success":
         return styles.buttonSuccess
+      case "danger":
+        return styles.buttonDanger
       case "link":
         return styles.buttonLink
       default:

@@ -180,16 +180,6 @@ main {
       width: 100%;
       margin: 2rem 0;
     }
-
-    /*&:not(:focus-within) {
-      button {
-        width: calc(100% - 2rem);
-        margin: 1rem 1rem;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-      }
-    }*/
   }
 }
 
@@ -200,4 +190,16 @@ span.counter {
   font-weight: 500;
   padding: 1px 3px;
   border-radius: 2px;
+}
+
+.timer-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 500px) {
+    button {
+      width: 100%;
+    }
+  }
 }
