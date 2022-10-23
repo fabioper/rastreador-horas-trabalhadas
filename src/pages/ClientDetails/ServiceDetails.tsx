@@ -11,15 +11,13 @@ import { useBackwardsPath } from "../../shared/contexts/BackwardsContext"
 import Service from "../../models/dtos/responses/service"
 import Loader from "../../shared/components/Loader/Loader"
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi"
-import { FaPlay, FaTrashAlt } from "react-icons/fa"
+import { FaTrashAlt } from "react-icons/fa"
 import { FiEdit } from "react-icons/fi"
 import OverlayMenu from "../../shared/components/OverlayMenu/OverlayMenu"
 import { useCollection } from "../../hooks/useCollection"
-import Button from "../../shared/components/Button/Button"
 import { WorkingTimeRange } from "../../models/dtos/responses/workingTimeRange"
 import { Timestamp } from "firebase/firestore"
-import Counter from "../../shared/components/Counter/Counter"
-import { MdPauseCircleFilled } from "react-icons/md"
+import Counter, { CounterState } from "../../shared/components/Counter/Counter"
 
 function ServiceDetails() {
   const { client } = useOutletContext<{ client: Client }>()
@@ -46,18 +44,17 @@ function ServiceDetails() {
     return ranges.at(-1)
   }, [service])
 
-  const neverInitiated = useMemo(
-    () => !currentWorkingTime,
-    [currentWorkingTime]
-  )
-  const isRunning = useMemo(
-    () => !currentWorkingTime?.endDate,
-    [currentWorkingTime]
-  )
-  const isPaused = useMemo(
-    () => !neverInitiated && !isRunning,
-    [currentWorkingTime]
-  )
+  const counterState = useMemo((): CounterState => {
+    if (!currentWorkingTime) {
+      return "empty"
+    }
+
+    if (currentWorkingTime?.endDate) {
+      return "paused"
+    }
+
+    return "running"
+  }, [currentWorkingTime])
 
   useEffect(() => {
     const timeUntilNow =
@@ -68,9 +65,13 @@ function ServiceDetails() {
           const end = range.endDate?.toDate() ?? new Date()
           return end.getTime() - start.getTime()
         })
-        .reduce((a, b) => a + b) ?? 0
+        .reduce((a, b) => a + b, 0) ?? 0
 
-    if (service?.workingTimeRanges && isRunning && currentWorkingTime) {
+    if (
+      service?.workingTimeRanges &&
+      counterState === "running" &&
+      currentWorkingTime
+    ) {
       const intervalId = setInterval(() => {
         setTotalTime(
           timeUntilNow +
@@ -129,50 +130,6 @@ function ServiceDetails() {
     [currentWorkingTime]
   )
 
-  const initButtonTemplate = (
-    <Button
-      onClick={() => service && initWorkingTime(service)}
-      icon={FaPlay}
-      kind="success"
-    >
-      Iniciar
-    </Button>
-  )
-
-  const pauseButtonTemplate = (
-    <Button
-      onClick={() => service && pauseWorkingTime(service)}
-      icon={MdPauseCircleFilled}
-      kind="danger"
-    >
-      Pausar
-    </Button>
-  )
-
-  const resumeButtonTemplate = (
-    <Button
-      onClick={() => service && resumeWorkingTime(service)}
-      icon={FaPlay}
-      kind="success"
-    >
-      Retomar
-    </Button>
-  )
-
-  const buttonTemplate = useMemo(() => {
-    if (neverInitiated) {
-      return initButtonTemplate
-    }
-
-    if (isRunning) {
-      return pauseButtonTemplate
-    }
-
-    if (isPaused) {
-      return resumeButtonTemplate
-    }
-  }, [service, currentWorkingTime])
-
   if (!service) {
     return <Loader />
   }
@@ -204,8 +161,13 @@ function ServiceDetails() {
       </header>
 
       <div className="container">
-        <Counter total={totalTime} />
-        <div className="timer-button">{buttonTemplate}</div>
+        <Counter
+          total={totalTime}
+          state={counterState}
+          onResume={async () => service && (await resumeWorkingTime(service))}
+          onInit={async () => service && (await initWorkingTime(service))}
+          onPause={async () => service && (await pauseWorkingTime(service))}
+        />
       </div>
     </main>
   )

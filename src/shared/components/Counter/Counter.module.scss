@@ -1,4 +1,8 @@
-.counterWrapper {
+.counterContainer {
+  /*background: red;*/
+}
+
+.counterBase {
   background: #1e232c;
   height: 50vh;
   width: 50vh;
@@ -7,6 +11,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.counterRunning {
+  composes: counterBase;
+}
+
+.counterPaused {
+  composes: counterBase;
+}
+
+.counterEmpty {
+  composes: counterBase;
 }
 
 .counterTime {
