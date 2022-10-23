@@ -49,7 +49,7 @@ export default function Button({
         disabled={isDisabled}
         className={`${buttonClass} ${Icon ? styles.hasIcon : ""} ${
           loading ? styles.loading : ""
-        }`}
+        } ${rest.className ? rest.className : ""}`}
       >
         {Icon && !loading && <i className={styles.buttonIcon}>{<Icon />}</i>}
         {loading && (

@@ -11,6 +11,7 @@ import { useCollection } from "../../../hooks/useCollection"
 import { WorkingTimeRange } from "../../../models/dtos/responses/workingTimeRange"
 import { Timestamp } from "firebase/firestore"
 import Timer, { CounterState } from "../../../shared/components/Counter/Timer"
+import Button from "../../../shared/components/Button/Button"
 
 function ServiceTimer() {
   const { client, service } = useOutletContext<{
@@ -144,6 +145,12 @@ function ServiceTimer() {
               },
             ]}
           />
+          <p className="page-subtitle">
+            Para:{" "}
+            <Button kind="link" to={`/${client.id}`}>
+              {client.name}
+            </Button>
+          </p>
         </div>
       </header>
 

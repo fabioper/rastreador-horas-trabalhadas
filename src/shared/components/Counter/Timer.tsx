@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import styles from "./Counter.module.scss"
+import styles from "./Timer.module.scss"
 import { Duration } from "luxon"
 import Button from "../Button/Button"
 import { FaPlay } from "react-icons/fa"
@@ -66,7 +66,7 @@ function Timer({ total, state, onPause, onResume, onInit }: CounterProps) {
           {Duration.fromMillis(total).toFormat("hh:mm:ss")}
         </span>
       </div>
-      <div className="timer-button">{buttonTemplate}</div>
+      <div className={styles.timerButton}>{buttonTemplate}</div>
     </div>
   )
 }

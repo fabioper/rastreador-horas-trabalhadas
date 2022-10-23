@@ -117,6 +117,10 @@ body {
 main {
   display: flex;
   flex-direction: column;
+
+  & > .container {
+    height: 100%;
+  }
 }
 
 .form {
@@ -190,16 +194,4 @@ span.counter {
   font-weight: 500;
   padding: 1px 3px;
   border-radius: 2px;
-}
-
-.timer-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: 500px) {
-    button {
-      width: 100%;
-    }
-  }
 }

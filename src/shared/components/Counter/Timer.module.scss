@@ -2,10 +2,13 @@
 
 .counterContainer {
   /*background: red;*/
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .counterBase {
-  background: #17171c;
+  background: linear-gradient(30deg, #1e232c, $color-background);
   height: 40vh;
   width: 40vh;
   margin: 3rem auto;
@@ -18,7 +21,7 @@
 
 .counterRunning {
   composes: counterBase;
-  background: linear-gradient(45deg, #141418, #1e232c);
+  background: transparent;
   height: 40vh;
   width: 40vh;
 
@@ -28,6 +31,19 @@
     height: 100%;
     background: linear-gradient(30deg, #3bc296 10%, transparent 60%);
     transform: scale(1.01);
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 100%;
+    z-index: -1;
+    animation: spin 1s linear infinite;
+  }
+
+  &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(30deg, #1e232c, $color-background);
     position: absolute;
     top: 0;
     left: 0;
@@ -52,6 +68,12 @@
 .counterTime {
   font-size: 4rem;
   font-weight: 700;
+}
+
+.timerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes spin {
