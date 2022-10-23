@@ -1,41 +1,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import useDocument from "../../hooks/useDocument"
-import {
-  Navigate,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from "react-router-dom"
-import Client from "../../models/dtos/responses/client"
-import { useBackwardsPath } from "../../shared/contexts/BackwardsContext"
-import Service from "../../models/dtos/responses/service"
-import Loader from "../../shared/components/Loader/Loader"
+import { useNavigate, useOutletContext } from "react-router-dom"
+import Client from "../../../models/dtos/responses/client"
+import Service from "../../../models/dtos/responses/service"
+import Loader from "../../../shared/components/Loader/Loader"
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi"
 import { FaTrashAlt } from "react-icons/fa"
 import { FiEdit } from "react-icons/fi"
-import OverlayMenu from "../../shared/components/OverlayMenu/OverlayMenu"
-import { useCollection } from "../../hooks/useCollection"
-import { WorkingTimeRange } from "../../models/dtos/responses/workingTimeRange"
+import OverlayMenu from "../../../shared/components/OverlayMenu/OverlayMenu"
+import { useCollection } from "../../../hooks/useCollection"
+import { WorkingTimeRange } from "../../../models/dtos/responses/workingTimeRange"
 import { Timestamp } from "firebase/firestore"
-import Counter, { CounterState } from "../../shared/components/Counter/Counter"
+import Timer, { CounterState } from "../../../shared/components/Counter/Timer"
 
-function ServiceDetails() {
-  const { client } = useOutletContext<{ client: Client }>()
-  const { serviceId } = useParams<{ serviceId: string }>()
+function ServiceTimer() {
+  const { client, service } = useOutletContext<{
+    client: Client
+    service: Service
+  }>()
+
   const navigate = useNavigate()
-  const { data: service } = useDocument<Service>(
-    `clients/${client.id}/services`,
-    serviceId
-  )
+
   const { remove, update } = useCollection<Service>(
     `clients/${client.id}/services`
   )
-
-  if (!serviceId) {
-    return <Navigate to={`/${client.id}`} />
-  }
-
-  useBackwardsPath(`/${client.id}`)
 
   const [totalTime, setTotalTime] = useState(0)
 
@@ -145,13 +132,13 @@ function ServiceDetails() {
               {
                 label: "Editar serviço",
                 icon: FiEdit,
-                path: `/${client.id}/${serviceId}/editar`,
+                path: `/${client.id}/${service.id}/editar`,
               },
               {
                 label: "Remover serviço",
                 icon: FaTrashAlt,
                 onClick: async () => {
-                  await remove(serviceId)
+                  await remove(service.id)
                   return navigate(`/${client.id}`)
                 },
               },
@@ -161,7 +148,7 @@ function ServiceDetails() {
       </header>
 
       <div className="container">
-        <Counter
+        <Timer
           total={totalTime}
           state={counterState}
           onResume={async () => service && (await resumeWorkingTime(service))}
@@ -173,4 +160,4 @@ function ServiceDetails() {
   )
 }
 
-export default ServiceDetails
+export default ServiceTimer

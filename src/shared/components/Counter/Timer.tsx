@@ -15,7 +15,7 @@ interface CounterProps {
   onInit: () => any
 }
 
-function Counter({ total, state, onPause, onResume, onInit }: CounterProps) {
+function Timer({ total, state, onPause, onResume, onInit }: CounterProps) {
   const counterStyles = useMemo(() => {
     switch (state) {
       case "paused":
@@ -71,4 +71,4 @@ function Counter({ total, state, onPause, onResume, onInit }: CounterProps) {
   )
 }
 
-export default Counter
+export default Timer

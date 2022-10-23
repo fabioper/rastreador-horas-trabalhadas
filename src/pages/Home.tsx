@@ -6,7 +6,7 @@ import Client from "../models/dtos/responses/client"
 import ClientCard from "../shared/components/ClientCard/ClientCard"
 import EmptyState from "../shared/components/EmptyState/EmptyState"
 
-export default function Clients() {
+export default function Home() {
   const { data: clients } = useCollection<Client>("clients")
 
   return (
