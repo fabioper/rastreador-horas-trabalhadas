@@ -12,6 +12,7 @@ import { WorkingTimeRange } from "../../../models/dtos/responses/workingTimeRang
 import { Timestamp } from "firebase/firestore"
 import Timer, { CounterState } from "../../../shared/components/Counter/Timer"
 import Button from "../../../shared/components/Button/Button"
+import ServiceInfoGrid from "../../../shared/components/ServiceInfoGrid/ServiceInfoGrid"
 
 function ServiceTimer() {
   const { client, service } = useOutletContext<{
@@ -153,6 +154,8 @@ function ServiceTimer() {
           </p>
         </div>
       </header>
+
+      <ServiceInfoGrid service={service} totalTime={totalTime} />
 
       <div className="container">
         <Timer

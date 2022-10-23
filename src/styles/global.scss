@@ -117,6 +117,7 @@ body {
 main {
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 
   & > .container {
     height: 100%;
