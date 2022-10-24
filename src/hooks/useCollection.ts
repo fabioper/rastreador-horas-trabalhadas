@@ -62,12 +62,6 @@ export function useCollection<T extends Model<any>>(
     await addDoc(collectionRef, { ...doc, createdDate: new Date() })
   }
 
-  /* function removeEmptyFields(data: object) {
-    return Object.fromEntries(
-      Object.entries(data).filter(([_, v]) => v !== undefined)
-    )
-  } */
-
   async function update(docId: string, data: any) {
     const ref = doc(db, collectionName, docId)
     await updateDoc(ref, { ...data })
