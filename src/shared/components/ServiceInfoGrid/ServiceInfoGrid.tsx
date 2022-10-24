@@ -2,16 +2,11 @@ import React, { useMemo } from "react"
 import styles from "./ServiceInfoGrid.module.scss"
 import Service from "../../../models/dtos/responses/service"
 import { Duration } from "luxon"
+import { toCurrency } from "../../utils/formatter"
 
 interface ServiceInfoGridProps {
   service: Service
   totalTime: number
-}
-
-function toCurrency(value: number) {
-  const currencyOptions = { style: "currency", currency: "BRL" }
-  const currencyFormatter = new Intl.NumberFormat("pt-BR", currencyOptions)
-  return currencyFormatter.format(value)
 }
 
 function ServiceInfoGrid({ service, totalTime }: ServiceInfoGridProps) {

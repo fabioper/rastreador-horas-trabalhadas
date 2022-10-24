@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-
-function toCurrency(value: number) {
-  const currencyOptions = { style: "currency", currency: "BRL" }
-  const currencyFormatter = new Intl.NumberFormat("pt-BR", currencyOptions)
-  return currencyFormatter.format(value)
-}
+import { toCurrency } from "../../utils/formatter"
 
 interface InputCurrencyProps {
   id: string
