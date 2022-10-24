@@ -19,6 +19,7 @@ import { defaultConverter } from "../shared/converters/defaultConverter"
 interface UseCollectionOpts<T extends Model<any>> {
   orderBy?: keyof T & string
   dir?: "desc" | "asc"
+  customConverter?: FirestoreDataConverter<T>
 }
 
 export function useCollection<T extends Model<any>>(
@@ -26,8 +27,7 @@ export function useCollection<T extends Model<any>>(
   opts: UseCollectionOpts<T> = {
     orderBy: "createdDate",
     dir: "desc",
-  },
-  customConverter?: FirestoreDataConverter<T>
+  }
 ) {
   const [data, setData] = useState<T[]>([])
 
@@ -42,8 +42,8 @@ export function useCollection<T extends Model<any>>(
   }, [])
 
   const converter = useMemo((): FirestoreDataConverter<T> => {
-    return customConverter ?? defaultConverter()
-  }, [customConverter])
+    return opts.customConverter ?? defaultConverter()
+  }, [opts.customConverter])
 
   const collectionRef = collection(db, collectionName).withConverter<T>(
     converter

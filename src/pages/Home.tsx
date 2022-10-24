@@ -5,9 +5,14 @@ import { FiPlusCircle } from "react-icons/fi"
 import Client from "../models/dtos/responses/client"
 import ClientCard from "../shared/components/ClientCard/ClientCard"
 import EmptyState from "../shared/components/EmptyState/EmptyState"
+import { clientConverter } from "../shared/converters/clientConverter"
 
 export default function Home() {
-  const { data: clients } = useCollection<Client>("clients")
+  const { data: clients } = useCollection<Client>("clients", {
+    customConverter: clientConverter,
+    dir: "asc",
+    orderBy: "createdDate",
+  })
 
   return (
     <main>
