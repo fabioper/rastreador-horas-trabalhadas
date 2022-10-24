@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Rastreador de Horas Trabalhadas",
+  "name": "Rastreador de Horas Trabalhadas",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#222222",
-  "background_color": "#222222"
+  "theme_color": "#1c1d23",
+  "background_color": "#1c1d23"
 }
