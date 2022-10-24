@@ -62,9 +62,7 @@ function Timer({ total, state, onPause, onResume, onInit }: CounterProps) {
   return (
     <div className={styles.counterContainer}>
       <div className={counterStyles}>
-        <span className={styles.counterTime}>
-          {Duration.fromMillis(total).toFormat("hh:mm:ss")}
-        </span>
+        <span className={styles.counterTime}>{Duration.fromMillis(total).toFormat("hh:mm:ss")}</span>
       </div>
       <div className={styles.timerButton}>{buttonTemplate}</div>
     </div>

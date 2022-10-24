@@ -11,12 +11,16 @@ import OverlayMenu from "../../shared/components/OverlayMenu/OverlayMenu"
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi"
 import { FaTrashAlt } from "react-icons/fa"
 import { useBackwardsPath } from "../../shared/contexts/BackwardsContext"
+import { serviceConverter } from "../../shared/converters/serviceConverter"
 
 export default function Services() {
   const { client } = useOutletContext<{ client: Client }>()
   const { remove } = useCollection<Client>("clients")
   const { data: services } = useCollection<Service>(
-    `clients/${client.id}/services`
+    `clients/${client.id}/services`,
+    {
+      customConverter: serviceConverter,
+    }
   )
 
   const navigate = useNavigate()

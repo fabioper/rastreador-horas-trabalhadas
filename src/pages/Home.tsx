@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useCollection } from "../hooks/useCollection"
 import Button from "../shared/components/Button/Button"
 import { FiPlusCircle } from "react-icons/fi"
@@ -12,7 +12,14 @@ export default function Home() {
     customConverter: clientConverter,
     dir: "asc",
     orderBy: "createdDate",
+    include: ["services"],
   })
+
+  useEffect(() => {
+    for (const client of clients) {
+      console.log(client)
+    }
+  }, [clients])
 
   return (
     <main>
@@ -33,10 +40,7 @@ export default function Home() {
             ))}
           </div>
 
-          <EmptyState
-            message="Nenhum cliente cadastrado"
-            visible={clients.length === 0}
-          />
+          <EmptyState message="Nenhum cliente cadastrado" visible={clients.length === 0} />
         </div>
       </div>
     </main>

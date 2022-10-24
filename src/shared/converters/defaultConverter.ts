@@ -1,12 +1,12 @@
-import {
-  DocumentData,
-  QueryDocumentSnapshot,
-  WithFieldValue,
-} from "firebase/firestore"
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue } from "firebase/firestore"
 import Model from "../../models/dtos/responses/model"
+import { LocalConverter } from "./localConverter"
 
-export function defaultConverter<T extends Model<any>>() {
+export function defaultConverter<T extends Model<any>>(): FirestoreDataConverter<T> & LocalConverter<T> {
   return {
+    fromLocal<T>(id: string, obj: T): T {
+      return { id, ...obj }
+    },
     toFirestore(modelObject: WithFieldValue<T>): DocumentData {
       return { ...modelObject }
     },

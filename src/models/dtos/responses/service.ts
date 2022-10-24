@@ -1,5 +1,6 @@
 import Model from "./model"
 import { WorkingInterval } from "./workingInterval"
+import { Duration } from "luxon"
 
 export default class Service extends Model<Service> {
   name: string
@@ -35,5 +36,12 @@ export default class Service extends Model<Service> {
         ?.map((interval) => interval.duration.milliseconds)
         .reduce((a, b) => a + b, 0) ?? 0
     )
+  }
+
+  get workedHours() {
+    const minimumMinutesToConsiderAnHour = 45
+    const [hours, minutes] = Duration.fromMillis(this.totalTimeRegistered).toFormat("hh:mm").split(":")
+
+    return parseInt(minutes) > minimumMinutesToConsiderAnHour ? parseInt(hours) + 1 : parseInt(hours)
   }
 }

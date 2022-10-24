@@ -14,7 +14,7 @@ function ServiceCard({ client, service }: ServiceCardProps) {
   const description = useMemo(() => {
     return (
       <>
-        <span className="counter">0</span> horas registradas.
+        <span className="counter">{service.workedHours}</span> horas registradas.
       </>
     )
   }, [service])

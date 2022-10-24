@@ -12,7 +12,7 @@ export default function ClientCard({ client }: ClientCardProps) {
   const description = useMemo(() => {
     return (
       <>
-        <span className="counter">0</span> horas registradas.
+        <span className="counter">{client.totalHours}</span> horas registradas.
       </>
     )
   }, [client])

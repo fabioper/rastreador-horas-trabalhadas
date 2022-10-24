@@ -10,16 +10,8 @@ interface ServiceInfoGridProps {
 }
 
 function ServiceInfoGrid({ service, totalTime }: ServiceInfoGridProps) {
-  const minimumMinutesToConsiderAnHour = 30
-
   const workedHours = useMemo(() => {
-    const [hours, minutes] = Duration.fromMillis(totalTime)
-      .toFormat("hh:mm")
-      .split(":")
-
-    return parseInt(minutes) > minimumMinutesToConsiderAnHour
-      ? parseInt(hours) + 1
-      : parseInt(hours)
+    return service.workedHours
   }, [service, totalTime])
 
   const remainingHours = useMemo(() => {

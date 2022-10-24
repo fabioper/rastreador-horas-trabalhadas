@@ -10,16 +10,19 @@ import {
   orderBy,
   query,
   QueryConstraint,
+  QueryDocumentSnapshot,
   updateDoc,
 } from "firebase/firestore"
 import { db } from "../services/firebase"
 import Model from "../models/dtos/responses/model"
 import { defaultConverter } from "../shared/converters/defaultConverter"
+import { LocalConverter } from "../shared/converters/localConverter"
 
 interface UseCollectionOpts<T extends Model<any>> {
   orderBy?: keyof T & string
   dir?: "desc" | "asc"
-  customConverter?: FirestoreDataConverter<T>
+  customConverter?: FirestoreDataConverter<T> & LocalConverter<T>
+  include?: Array<keyof T> & string[]
 }
 
 export function useCollection<T extends Model<any>>(
@@ -41,13 +44,11 @@ export function useCollection<T extends Model<any>>(
     return query(collectionRef, ...queries)
   }, [])
 
-  const converter = useMemo((): FirestoreDataConverter<T> => {
+  const converter = useMemo((): FirestoreDataConverter<T> & LocalConverter<T> => {
     return opts.customConverter ?? defaultConverter()
   }, [opts.customConverter])
 
-  const collectionRef = collection(db, collectionName).withConverter<T>(
-    converter
-  )
+  const collectionRef = collection(db, collectionName).withConverter<T>(converter)
 
   async function save(doc: any) {
     await addDoc(collectionRef, { ...doc, createdDate: new Date() })
@@ -63,12 +64,7 @@ export function useCollection<T extends Model<any>>(
 
     if (subCollections.length > 0) {
       for (const subCollection of subCollections) {
-        const subCollectionRef = collection(
-          db,
-          collectionName,
-          foundDoc.id,
-          subCollection
-        ).withConverter<T>(converter)
+        const subCollectionRef = collection(db, collectionName, foundDoc.id, subCollection).withConverter<T>(converter)
 
         const { docs: subCollectionDocs } = await getDocs<T>(subCollectionRef)
 
@@ -83,11 +79,32 @@ export function useCollection<T extends Model<any>>(
     await deleteDoc(foundDoc)
   }
 
+  function includeSubCollections(data: Array<QueryDocumentSnapshot<T>>) {
+    return data.map(async (doc) => {
+      let copy = { ...doc.data() }
+      for (const subCollectionName of opts.include ?? []) {
+        const subCollection = await getDocs(collection(db, collectionName, doc.id, subCollectionName))
+        copy = {
+          ...copy,
+          [subCollectionName]: subCollection.docs.map((doc) => doc.data()),
+        }
+      }
+      return converter.fromLocal(doc.id, copy)
+    })
+  }
+
   useEffect(() => {
     const collectionQuery = mountQuery()
 
     const unsubscribe = onSnapshot<T>(collectionQuery, (result) => {
-      setData(result.docs.map((doc) => doc.data()))
+      const data = result.docs
+
+      if (opts.include && opts.include.length > 0) {
+        const includedSubCollections = includeSubCollections(data)
+        Promise.all(includedSubCollections).then(setData).catch(console.error)
+      } else {
+        setData(data.map((doc) => doc.data()))
+      }
     })
 
     return () => unsubscribe()
