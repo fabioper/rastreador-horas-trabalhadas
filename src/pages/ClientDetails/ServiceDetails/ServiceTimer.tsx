@@ -8,7 +8,6 @@ import { FiEdit } from "react-icons/fi"
 import OverlayMenu from "../../../shared/components/OverlayMenu/OverlayMenu"
 import { useCollection } from "../../../hooks/useCollection"
 import { WorkingInterval } from "../../../models/dtos/responses/workingInterval"
-import { Timestamp } from "firebase/firestore"
 import Timer, { ServiceState } from "../../../shared/components/Counter/Timer"
 import Button from "../../../shared/components/Button/Button"
 import ServiceInfoGrid from "../../../shared/components/ServiceInfoGrid/ServiceInfoGrid"
@@ -35,10 +34,7 @@ function ServiceTimer() {
 
   // prettier-ignore
   const serviceIntervals = useMemo(() => (
-    service.workingIntervals?.map((interval) => ({
-      startDate: interval.startDate,
-      endDate: interval.endDate,
-    })) ?? []
+    service.workingIntervals?.map((interval) => (interval.data)) ?? []
   ), [service.workingIntervals])
 
   // prettier-ignore
@@ -55,24 +51,28 @@ function ServiceTimer() {
 
   // prettier-ignore
   const initWorkingTime = useCallback(async (service: Service) => {
-    const range = { startDate: Timestamp.now() } as WorkingInterval
-    await update(service.id, { workingIntervals: [range] } as Service)
+    const range = WorkingInterval.init()
+    await update(service.id, { workingIntervals: [range.data] } as Service)
   }, [currentWorkingTime])
 
   // prettier-ignore
   const resumeWorkingTime = useCallback(async (service: Service) => {
-    const range = { startDate: Timestamp.now() } as WorkingInterval
-    await update(service.id, { workingIntervals: [...serviceIntervals, range] } as Service)
+    const range = WorkingInterval.init()
+    await update(service.id, { workingIntervals: [...serviceIntervals, range.data] } as Service)
   }, [currentWorkingTime])
 
   // prettier-ignore
   const pauseWorkingTime = useCallback(async (service: Service) => {
-    const range = { ...currentWorkingTime, endDate: Timestamp.now() } as WorkingInterval
+    if (!currentWorkingTime) {
+      return
+    }
+
+    const range = currentWorkingTime.end()
 
     await update(service.id, {
       workingIntervals: serviceIntervals.map((workingRange) => {
         if (workingRange.startDate === currentWorkingTime?.startDate) {
-          return range
+          return range.data
         }
 
         return workingRange

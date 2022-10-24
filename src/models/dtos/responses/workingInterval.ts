@@ -15,4 +15,20 @@ export class WorkingInterval {
     const end = this.endDate?.toDate() ?? new Date()
     return Interval.fromDateTimes(start, end).toDuration()
   }
+
+  get data(): WorkingInterval {
+    return {
+      startDate: this.startDate,
+      endDate: this.endDate ?? null,
+    } as WorkingInterval
+  }
+
+  static init() {
+    return new WorkingInterval(Timestamp.now())
+  }
+
+  end() {
+    this.endDate = Timestamp.now()
+    return this
+  }
 }
