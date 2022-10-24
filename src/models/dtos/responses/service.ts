@@ -7,6 +7,7 @@ export default class Service extends Model<Service> {
   hourValue: number
   estimatedHoursTotal?: number
   workingIntervals?: WorkingInterval[]
+  minimumMinutesToConsiderAnHour = 45
 
   constructor(props: Partial<Service>) {
     super(props)
@@ -39,9 +40,7 @@ export default class Service extends Model<Service> {
   }
 
   get workedHours() {
-    const minimumMinutesToConsiderAnHour = 45
     const [hours, minutes] = Duration.fromMillis(this.totalTimeRegistered).toFormat("hh:mm").split(":")
-
-    return parseInt(minutes) > minimumMinutesToConsiderAnHour ? parseInt(hours) + 1 : parseInt(hours)
+    return parseInt(minutes) > this.minimumMinutesToConsiderAnHour ? parseInt(hours) + 1 : parseInt(hours)
   }
 }
