@@ -20,9 +20,7 @@ function ServiceTimer() {
 
   const navigate = useNavigate()
 
-  const { remove, update } = useCollection<Service>(
-    `clients/${client.id}/services`
-  )
+  const { remove, update } = useCollection<Service>(`clients/${client.id}/services`)
 
   const [totalTime, setTotalTime] = useState(0)
 
@@ -81,10 +79,7 @@ function ServiceTimer() {
   }, [currentWorkingTime])
 
   useEffect(() => {
-    const shouldSetInterval =
-      service?.workingIntervals &&
-      counterState === "running" &&
-      currentWorkingTime
+    const shouldSetInterval = service?.workingIntervals && counterState === "running" && currentWorkingTime
 
     if (shouldSetInterval) {
       return initInterval(currentWorkingTime)
