@@ -5,11 +5,11 @@ import Button from "../Button/Button"
 import { FaPlay } from "react-icons/fa"
 import { MdPauseCircleFilled } from "react-icons/md"
 
-export type CounterState = "running" | "paused" | "empty"
+export type ServiceState = "running" | "paused" | "empty"
 
 interface CounterProps {
   total: number
-  state: CounterState
+  state: ServiceState
   onPause: () => any
   onResume: () => any
   onInit: () => any

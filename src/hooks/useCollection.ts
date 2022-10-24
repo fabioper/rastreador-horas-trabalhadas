@@ -4,19 +4,17 @@ import {
   collection,
   deleteDoc,
   doc,
-  DocumentData,
   FirestoreDataConverter,
   getDocs,
   onSnapshot,
   orderBy,
   query,
   QueryConstraint,
-  QueryDocumentSnapshot,
   updateDoc,
-  WithFieldValue,
 } from "firebase/firestore"
 import { db } from "../services/firebase"
 import Model from "../models/dtos/responses/model"
+import { defaultConverter } from "../shared/converters/defaultConverter"
 
 interface UseCollectionOpts<T extends Model<any>> {
   orderBy?: keyof T & string
@@ -28,7 +26,8 @@ export function useCollection<T extends Model<any>>(
   opts: UseCollectionOpts<T> = {
     orderBy: "createdDate",
     dir: "desc",
-  }
+  },
+  customConverter?: FirestoreDataConverter<T>
 ) {
   const [data, setData] = useState<T[]>([])
 
@@ -42,17 +41,9 @@ export function useCollection<T extends Model<any>>(
     return query(collectionRef, ...queries)
   }, [])
 
-  const converter = useMemo(
-    (): FirestoreDataConverter<T> => ({
-      toFirestore(modelObject: WithFieldValue<T>): DocumentData {
-        return { ...modelObject }
-      },
-      fromFirestore(snapshot: QueryDocumentSnapshot): T {
-        return { id: snapshot.id, ...snapshot.data() } as T
-      },
-    }),
-    []
-  )
+  const converter = useMemo((): FirestoreDataConverter<T> => {
+    return customConverter ?? defaultConverter()
+  }, [customConverter])
 
   const collectionRef = collection(db, collectionName).withConverter<T>(
     converter
@@ -63,7 +54,7 @@ export function useCollection<T extends Model<any>>(
   }
 
   async function update(docId: string, data: any) {
-    const ref = doc(db, collectionName, docId)
+    const ref = doc(db, collectionName, docId).withConverter(converter)
     await updateDoc(ref, { ...data })
   }
 

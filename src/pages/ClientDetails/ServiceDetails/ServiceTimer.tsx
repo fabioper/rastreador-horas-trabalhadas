@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
 import Client from "../../../models/dtos/responses/client"
 import Service from "../../../models/dtos/responses/service"
-import Loader from "../../../shared/components/Loader/Loader"
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi"
 import { FaTrashAlt } from "react-icons/fa"
 import { FiEdit } from "react-icons/fi"
@@ -10,10 +9,9 @@ import OverlayMenu from "../../../shared/components/OverlayMenu/OverlayMenu"
 import { useCollection } from "../../../hooks/useCollection"
 import { WorkingInterval } from "../../../models/dtos/responses/workingInterval"
 import { Timestamp } from "firebase/firestore"
-import Timer, { CounterState } from "../../../shared/components/Counter/Timer"
+import Timer, { ServiceState } from "../../../shared/components/Counter/Timer"
 import Button from "../../../shared/components/Button/Button"
 import ServiceInfoGrid from "../../../shared/components/ServiceInfoGrid/ServiceInfoGrid"
-import { Interval } from "luxon"
 
 function ServiceTimer() {
   const { client, service } = useOutletContext<{
@@ -29,100 +27,71 @@ function ServiceTimer() {
 
   const [totalTime, setTotalTime] = useState(0)
 
-  const currentWorkingTime = useMemo(() => {
-    const ranges = service?.workingInterval ?? []
-    return ranges.at(-1)
-  }, [service])
+  // prettier-ignore
+  const currentWorkingTime = useMemo(() => service.mostRecentInterval, [service])
 
-  const counterState = useMemo((): CounterState => {
-    if (!currentWorkingTime) {
-      return "empty"
+  // prettier-ignore
+  const counterState = useMemo((): ServiceState => service.currentState, [currentWorkingTime])
+
+  // prettier-ignore
+  const serviceIntervals = useMemo(() => (
+    service.workingIntervals?.map((interval) => ({
+      startDate: interval.startDate,
+      endDate: interval.endDate,
+    })) ?? []
+  ), [service.workingIntervals])
+
+  // prettier-ignore
+  const initInterval = useCallback((currentInterval: WorkingInterval) => {
+    const intervalId = setInterval(() => {
+      const currentTimeElapsed = new Date().getTime() - currentInterval.startDate.toDate().getTime()
+      setTotalTime(service.totalTimeRegistered + currentTimeElapsed)
+    }, 100)
+
+    return () => {
+      clearInterval(intervalId)
     }
+  }, [currentWorkingTime])
 
-    if (currentWorkingTime?.endDate) {
-      return "paused"
-    }
+  // prettier-ignore
+  const initWorkingTime = useCallback(async (service: Service) => {
+    const range = { startDate: Timestamp.now() } as WorkingInterval
+    await update(service.id, { workingIntervals: [range] } as Service)
+  }, [currentWorkingTime])
 
-    return "running"
+  // prettier-ignore
+  const resumeWorkingTime = useCallback(async (service: Service) => {
+    const range = { startDate: Timestamp.now() } as WorkingInterval
+    await update(service.id, { workingIntervals: [...serviceIntervals, range] } as Service)
+  }, [currentWorkingTime])
+
+  // prettier-ignore
+  const pauseWorkingTime = useCallback(async (service: Service) => {
+    const range = { ...currentWorkingTime, endDate: Timestamp.now() } as WorkingInterval
+
+    await update(service.id, {
+      workingIntervals: serviceIntervals.map((workingRange) => {
+        if (workingRange.startDate === currentWorkingTime?.startDate) {
+          return range
+        }
+
+        return workingRange
+      }),
+    } as Service)
   }, [currentWorkingTime])
 
   useEffect(() => {
-    const timeUntilNow =
-      service?.workingInterval
-        ?.filter((range) => !!range.endDate)
-        ?.map((range) => {
-          const start = range.startDate.toDate()
-          const end = range.endDate?.toDate() ?? new Date()
-          return Interval.fromDateTimes(start, end).toDuration().milliseconds
-        })
-        .reduce((a, b) => a + b, 0) ?? 0
-
-    if (
-      service?.workingInterval &&
+    const shouldSetInterval =
+      service?.workingIntervals &&
       counterState === "running" &&
       currentWorkingTime
-    ) {
-      const intervalId = setInterval(() => {
-        setTotalTime(
-          timeUntilNow +
-            (new Date().getTime() -
-              currentWorkingTime.startDate.toDate().getTime())
-        )
-      }, 100)
 
-      return () => {
-        clearInterval(intervalId)
-      }
+    if (shouldSetInterval) {
+      return initInterval(currentWorkingTime)
     }
 
-    setTotalTime(timeUntilNow)
+    setTotalTime(service.totalTimeRegistered)
   }, [currentWorkingTime])
-
-  const initWorkingTime = useCallback(
-    async (service: Service) => {
-      const range = { startDate: Timestamp.now() } as WorkingInterval
-      await update(service.id, { workingTimeRanges: [range] })
-    },
-    [currentWorkingTime]
-  )
-
-  const resumeWorkingTime = useCallback(
-    async (service: Service) => {
-      const workingRanges = service.workingInterval ?? []
-      const range = { startDate: Timestamp.now() } as WorkingInterval
-      await update(service.id, {
-        ...service,
-        workingTimeRanges: [...workingRanges, range],
-      })
-    },
-    [currentWorkingTime]
-  )
-
-  const pauseWorkingTime = useCallback(
-    async (service: Service) => {
-      const range = {
-        ...currentWorkingTime,
-        endDate: Timestamp.now(),
-      } as WorkingInterval
-
-      const workingRanges = service.workingInterval ?? []
-
-      await update(service.id, {
-        workingTimeRanges: workingRanges.map((workingRange) => {
-          if (workingRange.startDate === currentWorkingTime?.startDate) {
-            return range
-          }
-
-          return workingRange
-        }),
-      })
-    },
-    [currentWorkingTime]
-  )
-
-  if (!service) {
-    return <Loader />
-  }
 
   return (
     <main>
