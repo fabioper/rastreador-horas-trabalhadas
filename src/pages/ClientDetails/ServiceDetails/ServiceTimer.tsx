@@ -13,6 +13,7 @@ import { Timestamp } from "firebase/firestore"
 import Timer, { CounterState } from "../../../shared/components/Counter/Timer"
 import Button from "../../../shared/components/Button/Button"
 import ServiceInfoGrid from "../../../shared/components/ServiceInfoGrid/ServiceInfoGrid"
+import { Interval } from "luxon"
 
 function ServiceTimer() {
   const { client, service } = useOutletContext<{
@@ -52,7 +53,7 @@ function ServiceTimer() {
         ?.map((range) => {
           const start = range.startDate.toDate()
           const end = range.endDate?.toDate() ?? new Date()
-          return end.getTime() - start.getTime()
+          return Interval.fromDateTimes(start, end).toDuration().milliseconds
         })
         .reduce((a, b) => a + b, 0) ?? 0
 

@@ -15,8 +15,16 @@ function toCurrency(value: number) {
 }
 
 function ServiceInfoGrid({ service, totalTime }: ServiceInfoGridProps) {
+  const minimumMinutesToConsiderAnHour = 30
+
   const workedHours = useMemo(() => {
-    return parseInt(Duration.fromMillis(totalTime).toFormat("hh"))
+    const [hours, minutes] = Duration.fromMillis(totalTime)
+      .toFormat("hh:mm")
+      .split(":")
+
+    return parseInt(minutes) > minimumMinutesToConsiderAnHour
+      ? parseInt(hours) + 1
+      : parseInt(hours)
   }, [service, totalTime])
 
   const remainingHours = useMemo(() => {
