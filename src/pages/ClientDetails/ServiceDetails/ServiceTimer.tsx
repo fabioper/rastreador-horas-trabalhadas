@@ -8,7 +8,7 @@ import { FaTrashAlt } from "react-icons/fa"
 import { FiEdit } from "react-icons/fi"
 import OverlayMenu from "../../../shared/components/OverlayMenu/OverlayMenu"
 import { useCollection } from "../../../hooks/useCollection"
-import { WorkingTimeRange } from "../../../models/dtos/responses/workingTimeRange"
+import { WorkingInterval } from "../../../models/dtos/responses/workingInterval"
 import { Timestamp } from "firebase/firestore"
 import Timer, { CounterState } from "../../../shared/components/Counter/Timer"
 import Button from "../../../shared/components/Button/Button"
@@ -30,7 +30,7 @@ function ServiceTimer() {
   const [totalTime, setTotalTime] = useState(0)
 
   const currentWorkingTime = useMemo(() => {
-    const ranges = service?.workingTimeRanges ?? []
+    const ranges = service?.workingInterval ?? []
     return ranges.at(-1)
   }, [service])
 
@@ -48,7 +48,7 @@ function ServiceTimer() {
 
   useEffect(() => {
     const timeUntilNow =
-      service?.workingTimeRanges
+      service?.workingInterval
         ?.filter((range) => !!range.endDate)
         ?.map((range) => {
           const start = range.startDate.toDate()
@@ -58,7 +58,7 @@ function ServiceTimer() {
         .reduce((a, b) => a + b, 0) ?? 0
 
     if (
-      service?.workingTimeRanges &&
+      service?.workingInterval &&
       counterState === "running" &&
       currentWorkingTime
     ) {
@@ -80,7 +80,7 @@ function ServiceTimer() {
 
   const initWorkingTime = useCallback(
     async (service: Service) => {
-      const range = { startDate: Timestamp.now() } as WorkingTimeRange
+      const range = { startDate: Timestamp.now() } as WorkingInterval
       await update(service.id, { workingTimeRanges: [range] })
     },
     [currentWorkingTime]
@@ -88,8 +88,8 @@ function ServiceTimer() {
 
   const resumeWorkingTime = useCallback(
     async (service: Service) => {
-      const workingRanges = service.workingTimeRanges ?? []
-      const range = { startDate: Timestamp.now() } as WorkingTimeRange
+      const workingRanges = service.workingInterval ?? []
+      const range = { startDate: Timestamp.now() } as WorkingInterval
       await update(service.id, {
         ...service,
         workingTimeRanges: [...workingRanges, range],
@@ -103,9 +103,9 @@ function ServiceTimer() {
       const range = {
         ...currentWorkingTime,
         endDate: Timestamp.now(),
-      } as WorkingTimeRange
+      } as WorkingInterval
 
-      const workingRanges = service.workingTimeRanges ?? []
+      const workingRanges = service.workingInterval ?? []
 
       await update(service.id, {
         workingTimeRanges: workingRanges.map((workingRange) => {

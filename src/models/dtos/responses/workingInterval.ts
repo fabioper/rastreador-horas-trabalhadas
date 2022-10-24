@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore"
 
-export class WorkingTimeRange {
+export class WorkingInterval {
   startDate: Timestamp
   endDate?: Timestamp
 }
